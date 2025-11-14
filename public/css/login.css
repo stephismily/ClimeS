@@ -1,0 +1,57 @@
+body {
+  height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at top, #0a0f24, #000);
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 380px;
+  padding: 35px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  animation: fadeIn 0.9s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card h2 {
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 25px;
+  color: #ffffff;
+  text-shadow: 0 0 12px #2b88c6;
+}
+
+.login-btn {
+  padding: 10px;
+  font-weight: 600;
+  border-radius: 25px;
+  background: #2b88c6;
+  border: none;
+}
+
+.login-btn:hover {
+  background: #1a6a99;
+}
+
+#message {
+  font-size: 0.9em;
+  color: #ffc107;
+}
