@@ -51,7 +51,6 @@ body {
   background: #1a6a99;
 }
 
-#message {
-  font-size: 0.9em;
-  color: #ffc107;
+a {
+  color: #2b88c6;
 }

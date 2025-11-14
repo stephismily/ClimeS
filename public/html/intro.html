@@ -28,8 +28,9 @@
         <a href="team.html">Our Team</a>
       </nav>
 
-      <div class="auth-buttons">
-        <button>Sign In / Sign Up</button>
+      <!-- 👇 Dynamic Auth Buttons -->
+      <div class="auth-buttons" id="authArea">
+        <!-- Filled by JS -->
       </div>
     </header>
 
@@ -48,5 +49,35 @@
 
     <!-- GSAP ScrollTo Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+    <!-- AUTH LOGIC -->
+    <script>
+      const authArea = document.getElementById("authArea");
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+
+      if (token && user) {
+        // ⭐ User Logged In
+        authArea.innerHTML = `
+          <span style="color:white; margin-right:15px;">
+            Hi, ${user.name}
+          </span>
+          <button id="logoutBtn">Logout</button>
+        `;
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.reload();
+        });
+      } else {
+        // 🚪 User NOT logged in
+        authArea.innerHTML = `
+          <button onclick="window.location.href='login.html'">
+            Sign In / Sign Up
+          </button>
+        `;
+      }
+    </script>
   </body>
 </html>
