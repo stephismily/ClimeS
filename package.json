@@ -1,30 +1,17 @@
 {
   "name": "climes",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/stephismily/ClimeS.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "ClimeS Weather App Full Stack",
   "type": "module",
-  "bugs": {
-    "url": "https://github.com/stephismily/ClimeS/issues"
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
   },
-  "homepage": "https://github.com/stephismily/ClimeS#readme",
   "dependencies": {
-    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^7.0.0",
-    "mongoose": "^8.19.4"
+    "mongodb": "^6.5.0"
   }
 }
