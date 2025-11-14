@@ -1,0 +1,233 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at center, #2f3b52, #111a29);
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+/* ⚡ Flash overlay */
+.flash-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(173, 216, 255, 0.8),
+    rgba(0, 0, 50, 0.1)
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  mix-blend-mode: screen;
+}
+
+.weather-card {
+  width: 380px;
+  height: 520px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(to bottom, #6a7a91, #a6b5c7);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  z-index: 5;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 60%;
+  overflow: hidden;
+}
+
+/* ☁️ Background moving clouds */
+.bg-cloud {
+  position: absolute;
+  top: 25%;
+  width: 180px;
+  opacity: 0.4;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+  z-index: 1;
+}
+
+.bg-cloud svg path {
+  fill: #8b99a5;
+}
+
+.bg-cloud.one {
+  left: -200px;
+  top: 20%;
+  transform: scale(0.8);
+}
+.bg-cloud.two {
+  left: -300px;
+  top: 40%;
+  transform: scale(1);
+}
+.bg-cloud.three {
+  left: -150px;
+  top: 10%;
+  transform: scale(1.2);
+}
+
+/* ☁️ Main SVG Storm Cloud */
+.storm-cloud {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  z-index: 5;
+}
+
+.storm-cloud svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.2));
+}
+
+/* 👀 Face */
+.face {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.eye {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 3px #000 inset;
+}
+
+.pupil {
+  width: 8px;
+  height: 8px;
+  background: #000;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  transition: all 0.15s ease-out;
+}
+
+.eye.left {
+  left: 70px;
+}
+.eye.right {
+  right: 70px;
+}
+
+/* 😱 Scared mouth */
+.mouth {
+  width: 24px;
+  height: 24px;
+  background: #111;
+  border-radius: 50%;
+  margin: 45px auto 0;
+  border: 2px solid #555;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3) inset;
+}
+
+/* 🌧️ Raindrops */
+.raindrop {
+  width: 6px;
+  height: 16px;
+  background: linear-gradient(to bottom, #aee, #48c);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 45%;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+  z-index: 3;
+}
+
+/* ⚡ Lightning */
+.lightning {
+  position: absolute;
+  top: 46%;
+  z-index: 4;
+  opacity: 0;
+  filter: drop-shadow(0 0 25px rgba(255, 255, 100, 0.9));
+  transform: scale(0.9);
+}
+
+.lightning.center {
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+}
+.lightning.left {
+  left: 25%;
+  transform: translateX(-50%) scale(0.9);
+}
+.lightning.right {
+  left: 75%;
+  transform: translateX(-50%) scale(0.9);
+}
+
+.bolt-segment {
+  position: absolute;
+  background: linear-gradient(to bottom, #fff700, #ffd200);
+  transform: skewX(-15deg);
+}
+
+.bolt-segment.top {
+  width: 14px;
+  height: 60px;
+  left: -7px;
+  top: 0;
+}
+
+.bolt-segment.bottom {
+  width: 10px;
+  height: 40px;
+  left: 6px;
+  top: 55px;
+  transform: skewX(-15deg) rotate(10deg);
+}
+
+.bolt-branch {
+  width: 6px;
+  height: 30px;
+  position: absolute;
+  background: linear-gradient(to bottom, #fff, #ffe066);
+  top: 70px;
+  left: -10px;
+  transform: rotate(-30deg);
+  border-radius: 3px;
+}
+
+.bolt-branch.right {
+  left: 10px;
+  transform: rotate(30deg);
+}
+
+.weather-info {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  color: #222;
+  font-weight: 600;
+}
+
+.temperature {
+  font-size: 2.5em;
+  margin-bottom: 8px;
+}
+
+.city {
+  font-size: 1.2em;
+  margin-bottom: 6px;
+}

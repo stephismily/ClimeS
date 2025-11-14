@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>🌍 Cinematic Weather Globe + Parallax Days</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <!-- CDN LIBRARIES -->
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- EXTERNAL CSS -->
+    <link rel="stylesheet" href="../css/globe.css" />
+  </head>
+
+  <body>
+    <div class="app" id="app">
+      <div id="map"></div>
+
+      <div class="card" id="weatherCard">
+        <iframe
+          id="weatherAnim"
+          class="weather-bg"
+          src="weather_cards/sunny.html"
+        ></iframe>
+
+        <div class="topbar">
+          <button id="splitBtn">🪄 Split View</button>
+          <button id="closeBtn">✕ Close</button>
+        </div>
+
+        <div class="info-overlay">
+          <div class="info-content" id="infoContent">
+            <div class="info-title" id="cardTitle">Loading...</div>
+            <div class="info-sub" id="cardCoords"></div>
+
+            <div class="metrics">
+              <div class="metric">🌡 <span id="mTemp">-- °C</span></div>
+              <div class="metric">💧 <span id="mHum">-- %</span></div>
+              <div class="metric">💨 <span id="mWind">-- m/s</span></div>
+              <div class="metric">☁ <span id="mCond">--</span></div>
+            </div>
+
+            <div class="day-label" id="dayLabel">Today</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXTERNAL JS -->
+    <script src="../js/globe.js"></script>
+  </body>
+</html>

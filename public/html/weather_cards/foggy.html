@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🌫️ Foggy Morning Weather Card — GSAP Animation</title>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../../css/foggy.css" />
+  </head>
+
+  <body>
+    <div class="weather-card">
+      <div class="scene">
+        <!-- 🌤️ Sun -->
+        <div class="sun"></div>
+
+        <!-- ☁️ Foreground translucent clouds over the sun -->
+        <svg
+          class="sun-cloud"
+          style="top: 35px; left: 40px; width: 230px"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M45 80a25 25 0 1 1 15-55 35 35 0 1 1 70 15 20 20 0 1 1 10 40H45z"
+          />
+        </svg>
+        <svg
+          class="sun-cloud"
+          style="top: 50px; left: 160px; width: 200px; transform: scale(1.1)"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M50 80a20 20 0 1 1 10-40 40 40 0 1 1 70 10 25 25 0 1 1 10 30H50z"
+          />
+        </svg>
+
+        <!-- ☁️ Background clouds -->
+        <svg
+          class="bg-cloud"
+          style="top: -40px; left: -200px; width: 280px"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M40 80a30 30 0 1 1 10-58 45 45 0 1 1 80 10 25 25 0 1 1 10 48H40z"
+          />
+        </svg>
+        <svg
+          class="bg-cloud"
+          style="top: -30px; left: 220px; width: 300px"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M50 80a30 30 0 1 1 10-58 35 35 0 1 1 80 10 20 20 0 1 1 5 48H50z"
+          />
+        </svg>
+
+        <!-- Main translucent front cloud -->
+        <div class="fog-cloud" id="fogCloud">
+          <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M60 90a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H60z"
+              fill="rgba(235,240,245,0.8)"
+            />
+          </svg>
+
+          <div class="face">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="mouth"></div>
+          </div>
+        </div>
+
+        <!-- Mist layers -->
+        <div class="mist mist1"></div>
+        <div class="mist mist2"></div>
+        <div class="mist mist3"></div>
+
+        <!-- Floating fog particles -->
+        <div class="particle" style="top: 20%; left: 10%"></div>
+        <div class="particle" style="top: 40%; left: 70%"></div>
+        <div class="particle" style="top: 60%; left: 30%"></div>
+        <div class="particle" style="top: 25%; left: 80%"></div>
+        <div class="particle" style="top: 50%; left: 50%"></div>
+      </div>
+
+      <div class="weather-info">
+        <div class="temperature">18°C</div>
+        <div class="city">Ooty, India</div>
+        <div>Foggy Morning 😌</div>
+      </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="../../js/foggy.js"></script>
+  </body>
+</html>

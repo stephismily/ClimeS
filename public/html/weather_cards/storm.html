@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>⚡ Storm Cloud – Fluffy Cartoon Thunder</title>
+    <link rel="stylesheet" href="../../css/storm.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  </head>
+  <body>
+    <div class="flash-overlay" id="flash"></div>
+
+    <div class="weather-card storm">
+      <div class="scene">
+        <!-- 🌫️ Background moving clouds -->
+        <div class="bg-cloud one">
+          <svg viewBox="0 0 200 120">
+            <path
+              d="M60 90a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H60z"
+            />
+          </svg>
+        </div>
+        <div class="bg-cloud two">
+          <svg viewBox="0 0 200 120">
+            <path
+              d="M60 90a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H60z"
+            />
+          </svg>
+        </div>
+        <div class="bg-cloud three">
+          <svg viewBox="0 0 200 120">
+            <path
+              d="M60 90a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H60z"
+            />
+          </svg>
+        </div>
+
+        <!-- ☁️ Main Storm Cloud (SVG) -->
+        <div class="storm-cloud" id="cloudFace">
+          <svg viewBox="0 0 200 120">
+            <path
+              d="M60 90a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H60z"
+              fill="#7d8a96"
+            />
+          </svg>
+
+          <div class="face">
+            <div class="eye left"><div class="pupil"></div></div>
+            <div class="eye right"><div class="pupil"></div></div>
+            <div class="mouth" id="mouth"></div>
+          </div>
+        </div>
+
+        <!-- 🌧️ Heavy Rain -->
+        <div class="rain">
+          <div class="raindrop" style="left: 10%"></div>
+          <div class="raindrop" style="left: 20%"></div>
+          <div class="raindrop" style="left: 30%"></div>
+          <div class="raindrop" style="left: 40%"></div>
+          <div class="raindrop" style="left: 50%"></div>
+          <div class="raindrop" style="left: 60%"></div>
+          <div class="raindrop" style="left: 70%"></div>
+          <div class="raindrop" style="left: 80%"></div>
+          <div class="raindrop" style="left: 90%"></div>
+        </div>
+
+        <!-- ⚡ Lightning Bolts -->
+        <div class="lightning left" id="boltLeft">
+          <div class="bolt-segment top"></div>
+          <div class="bolt-segment bottom"></div>
+          <div class="bolt-branch"></div>
+          <div class="bolt-branch right"></div>
+        </div>
+
+        <div class="lightning center" id="boltCenter">
+          <div class="bolt-segment top"></div>
+          <div class="bolt-segment bottom"></div>
+          <div class="bolt-branch"></div>
+          <div class="bolt-branch right"></div>
+        </div>
+
+        <div class="lightning right" id="boltRight">
+          <div class="bolt-segment top"></div>
+          <div class="bolt-segment bottom"></div>
+          <div class="bolt-branch"></div>
+          <div class="bolt-branch right"></div>
+        </div>
+      </div>
+
+      <div class="weather-info">
+        <div class="temperature">21°C</div>
+        <div class="city">Chennai, India</div>
+        <div>Severe Thunderstorm ⛈️</div>
+      </div>
+    </div>
+
+    <script src="../../js/storm.js"></script>
+  </body>
+</html>

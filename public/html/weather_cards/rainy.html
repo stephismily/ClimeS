@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>☁️ Calm Storm Cloud (No Thunder)</title>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../../css/rainy.css" />
+  </head>
+
+  <body>
+    <div class="weather-card rain">
+      <!-- 🌫️ Moving Background Clouds -->
+      <div class="cloud-layer">
+        <svg
+          class="bg-cloud"
+          style="top: 40px; left: -180px"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M40 80a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H40z"
+          />
+        </svg>
+        <svg
+          class="bg-cloud"
+          style="top: 10px; left: 100px; transform: scale(1.5)"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M50 80a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H50z"
+          />
+        </svg>
+        <svg
+          class="bg-cloud"
+          style="top: 60px; left: 300px; transform: scale(1.2)"
+          viewBox="0 0 200 100"
+        >
+          <path
+            d="M40 80a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H40z"
+          />
+        </svg>
+      </div>
+
+      <!-- ☁️ Cloud with Face -->
+      <div class="rain-cloud" id="cloudFace">
+        <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M60 90a30 30 0 1 1 10-58 40 40 0 1 1 80 10 25 25 0 1 1 5 48H60z"
+            fill="#66696b"
+          />
+        </svg>
+
+        <div class="face">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+
+      <!-- 🌧️ Raindrops -->
+      <div class="raindrop" style="left: 25%"></div>
+      <div class="raindrop" style="left: 40%"></div>
+      <div class="raindrop" style="left: 55%"></div>
+      <div class="raindrop" style="left: 70%"></div>
+
+      <!-- 🌡️ Weather Info -->
+      <div class="weather-info">
+        <div class="temperature">21°C</div>
+        <div class="city">Chennai, India</div>
+        <div>Rainy Evening ☁️</div>
+      </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="../../js/rainy.js"></script>
+  </body>
+</html>

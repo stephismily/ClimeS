@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snow Weather Card ❄️</title>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../../css/snowy.css" />
+  </head>
+
+  <body>
+    <div class="card" id="snowCard">
+      <div class="snow-layer"></div>
+
+      <!-- Snowman -->
+      <div class="snowman" id="snowman">
+        <div class="head">
+          <div class="eye left"><div class="pupil" id="pupilLeft"></div></div>
+          <div class="eye right"><div class="pupil" id="pupilRight"></div></div>
+          <div class="nose"></div>
+          <div class="scarf"></div>
+        </div>
+        <div class="body">
+          <div class="hand left"></div>
+          <div class="hand right"></div>
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="temperature">-3°C</div>
+        <div class="location">Reykjavik</div>
+      </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="../../js/snowy.js"></script>
+  </body>
+</html>

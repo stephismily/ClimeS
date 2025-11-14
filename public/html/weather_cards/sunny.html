@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cartoon Weather Card — Reactive Sun & Clouds</title>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../../css/sunny.css" />
+  </head>
+
+  <body>
+    <div class="weather-card">
+      <div class="scene">
+        <div class="sun" id="sun">
+          <div class="face">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="mouth" id="mouth"></div>
+          </div>
+          <div class="sweat" id="sweat"></div>
+        </div>
+
+        <div class="cloud" style="top: 15%; width: 130px; height: 48px"></div>
+        <div class="cloud" style="top: 30%; width: 170px; height: 62px"></div>
+        <div class="cloud" style="top: 45%; width: 150px; height: 54px"></div>
+
+        <div class="main-cloud" id="mainCloud"></div>
+        <div class="front-cloud" id="frontCloud"></div>
+      </div>
+
+      <div class="weather-info">
+        <div class="temperature" id="tempValue"></div>
+        <div class="city"></div>
+        <div id="conditionText"></div>
+      </div>
+    </div>
+
+    <!-- External JS -->
+    <script src="../../js/sunny.js"></script>
+  </body>
+</html>

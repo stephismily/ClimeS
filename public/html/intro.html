@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="../css/intro.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/",
+          "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js",
+          "ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!-- 🧊 Glass Header -->
+    <header>
+      <div class="logo">ClimeS</div>
+
+      <nav class="nav-links">
+        <a href="#">Home</a>
+        <a href="team.html">Our Team</a>
+      </nav>
+
+      <div class="auth-buttons">
+        <button>Sign In / Sign Up</button>
+      </div>
+    </header>
+
+    <canvas id="canvas"></canvas>
+    <div class="overlay">Embark on Your Cosmic Journey</div>
+    <button class="explore-btn" id="exploreBtn">Explore the Universe</button>
+    <div class="scroll-area"></div>
+
+    <!-- 🌍 Globe Section -->
+    <div class="globe-section" id="globeSection">
+      <iframe src="globe.html" class="globe-frame"></iframe>
+    </div>
+
+    <!-- External JS -->
+    <script type="module" src="../js/intro.js"></script>
+
+    <!-- GSAP ScrollTo Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  </body>
+</html>

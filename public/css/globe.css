@@ -1,0 +1,165 @@
+:root {
+  --card-width: 460px;
+  --card-height: 600px;
+  --transition-duration: 500ms;
+  --accent: #2b88c6;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  transition: all var(--transition-duration) ease;
+}
+
+.app.split {
+  grid-template-columns: 1fr var(--card-width);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.card {
+  position: absolute;
+  width: var(--card-width);
+  height: var(--card-height);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  transition: all var(--transition-duration) ease;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  backdrop-filter: blur(6px);
+}
+
+.card.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.app.split .card {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.weather-bg {
+  width: 100%;
+  height: 100%;
+  border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.topbar {
+  position: absolute;
+  top: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+.topbar button {
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #222;
+  transition: background 0.2s;
+}
+
+.topbar button:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.info-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  padding: 20px 20px 30px;
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 2;
+  color: #111;
+  perspective: 800px;
+}
+
+.info-content {
+  position: relative;
+  will-change: transform, opacity;
+}
+
+.info-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.info-sub {
+  font-size: 1em;
+  opacity: 0.8;
+  margin-bottom: 14px;
+}
+
+.metrics {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.metric {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 10px 16px;
+  border-radius: 12px;
+  min-width: 120px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.day-label {
+  margin-top: 10px;
+  font-size: 1em;
+  font-weight: 700;
+  color: #333;
+}
