@@ -9,7 +9,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   msg.textContent = "Creating account...";
   msg.style.color = "#2b88c6";
 
-  const response = await fetch("http://localhost:5000/auth/signup", {
+  const response = await fetch("https://stephismily.github.io/ClimeS/public/html/signup.html", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, email, password }),
