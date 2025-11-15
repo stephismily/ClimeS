@@ -9,7 +9,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   msg.style.color = "#2b88c6";
 
   try {
-    const response = await fetch("https://clime-s.vercel.app/auth/login", {
+    const response = await fetch("https://climes.onrender.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
