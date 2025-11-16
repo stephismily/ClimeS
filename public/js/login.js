@@ -24,11 +24,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       msg.style.color = "#4caf50";
       msg.textContent = "Login successful! Redirecting...";
 
-      // Save token if you want (optional)
       localStorage.setItem("authToken", data.token);
 
       setTimeout(() => {
-        window.location.href = "index.html"; // or dashboard.html
+        window.location.href = "../../index.html";
       }, 1200);
     } else {
       msg.style.color = "#ff4444";
