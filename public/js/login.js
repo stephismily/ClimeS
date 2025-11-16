@@ -27,7 +27,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       localStorage.setItem("authToken", data.token);
 
       setTimeout(() => {
-        window.location.href = "/ClimeS/index.html";
+        window.location.href = "/../../index.html";
       }, 1200);
     } else {
       msg.style.color = "#ff4444";
