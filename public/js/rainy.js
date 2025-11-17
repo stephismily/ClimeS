@@ -10,16 +10,25 @@ gsap.to(cloudFace, {
   ease: "sine.inOut",
 });
 
-// 🌫️ Moving background clouds
+// 🌫️ Fog-style drifting background clouds
 gsap.utils.toArray(".bg-cloud").forEach((cloud, i) => {
   gsap.to(cloud, {
-    x: "-=600",
-    duration: 20 + i * 10,
+    x: "-=400",
+    duration: 35 + i * 10,
     repeat: -1,
     ease: "linear",
     modifiers: {
-      x: gsap.utils.unitize((x) => parseFloat(x) % 600),
+      x: gsap.utils.unitize((x) => parseFloat(x) % 400),
     },
+  });
+
+  // Depth bobbing
+  gsap.to(cloud, {
+    y: "+=12",
+    duration: 5 + i * 0.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
   });
 });
 
@@ -30,7 +39,7 @@ eyes.forEach((eye) => {
     duration: 0.15,
     repeat: -1,
     yoyo: true,
-    repeatDelay: 3 + Math.random() * 2,
+    repeatDelay: 3,
   });
 });
 
