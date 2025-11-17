@@ -204,7 +204,7 @@ map.on("click", async (e) => {
     cardTitle.textContent = locationName;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
 
-    animFrame.src = "weather_cards/sunny.html";
+    animFrame.src = "weather_cards/snowy.html";
   } catch {
     cardTitle.textContent = "Error fetching data.";
   }
