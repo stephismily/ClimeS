@@ -28,6 +28,7 @@ const infoContent = document.getElementById("infoContent");
 let currentOffset = 0;
 let weatherData = null;
 
+/* MAP LOCK / UNLOCK */
 function lockGlobe() {
   map.dragPan.disable();
   map.scrollZoom.disable();
@@ -44,6 +45,7 @@ function unlockGlobe() {
 
 unlockGlobe();
 
+/* UI BUTTONS */
 closeBtn.onclick = () => {
   card.classList.remove("visible");
   app.classList.remove("split");
@@ -56,6 +58,7 @@ splitBtn.onclick = () => {
   else lockGlobe();
 };
 
+/* FETCH WEATHER APIS */
 async function fetchWeather(lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weathercode&past_days=1&forecast_days=2&timezone=auto`;
   const res = await fetch(url);
@@ -66,6 +69,7 @@ async function getLocationName(lat, lon) {
   const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
   const res = await fetch(url);
   const data = await res.json();
+
   return (
     data.city ||
     data.locality ||
@@ -75,6 +79,7 @@ async function getLocationName(lat, lon) {
   );
 }
 
+/* WEATHER CODE → TEXT */
 function codeToText(code) {
   const map = {
     0: "Clear sky",
@@ -102,6 +107,34 @@ function codeToText(code) {
   return map[code] || "Unknown";
 }
 
+/* WEATHER CODE → 5 CATEGORY ANIMATIONS
+   Updated mapping:
+   - code 2 (Partly cloudy) => sunny
+   - code 3 (Overcast) => foggy
+*/
+function codeToCategory(code) {
+  if ([3].includes(code)) return "foggy"; // Overcast -> foggy
+  if ([45, 48].includes(code)) return "foggy";
+  if ([2].includes(code)) return "sunny"; // Partly cloudy -> sunny
+  if ([0, 1].includes(code)) return "sunny";
+  if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return "rain";
+  if ([71, 73, 75].includes(code)) return "snowy";
+  if ([95, 96, 99].includes(code)) return "stormy";
+  return "sunny";
+}
+
+/* Combined logic → if temp < 5°C force snowy */
+function categoryFromSummary(summary) {
+  if (!summary) return "sunny";
+
+  const temp = Number(summary.t);
+  const code = Number(summary.code);
+
+  if (!isNaN(temp) && temp < 5) return "snowy";
+  return codeToCategory(code);
+}
+
+/* SUMMARIZE DAY */
 function summarizeDay(data, offset) {
   const h = data.hourly;
   if (!h) return null;
@@ -111,7 +144,6 @@ function summarizeDay(data, offset) {
 
   const tgt = new Date(now);
   tgt.setDate(now.getDate() + offset);
-
   const tgtDate = tgt.toISOString().split("T")[0];
 
   const idx = times
@@ -122,21 +154,48 @@ function summarizeDay(data, offset) {
 
   const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-  const t = avg(idx.map((i) => h.temperature_2m[i])).toFixed(1);
-  const hum = avg(idx.map((i) => h.relative_humidity_2m[i])).toFixed(0);
-  const wind = avg(idx.map((i) => h.wind_speed_10m[i])).toFixed(1);
+  const t = avg(idx.map((i) => h.temperature_2m[i]));
+  const hum = avg(idx.map((i) => h.relative_humidity_2m[i]));
+  const wind = avg(idx.map((i) => h.wind_speed_10m[i]));
 
   const codeCount = {};
-  idx.forEach(
-    (i) =>
-      (codeCount[h.weathercode[i]] = (codeCount[h.weathercode[i]] || 0) + 1)
+  idx.forEach((i) => {
+    const c = h.weathercode[i];
+    codeCount[c] = (codeCount[c] || 0) + 1;
+  });
+
+  const code = Number(
+    Object.entries(codeCount).sort((a, b) => b[1] - a[1])[0][0]
   );
 
-  const code = Object.entries(codeCount).sort((a, b) => b[1] - a[1])[0][0];
-
-  return { t, hum, wind, cond: codeToText(code) };
+  return {
+    t: t.toFixed(1),
+    hum: Math.round(hum),
+    wind: wind.toFixed(1),
+    cond: codeToText(code),
+    code,
+  };
 }
 
+/* SMOOTH TRANSITION FOR IFRAME */
+function smoothSwapIframe(newSrc) {
+  // Ensure element has explicit opacity for gsap to animate consistently
+  if (!animFrame.style.opacity) animFrame.style.opacity = "1";
+
+  gsap.to(animFrame, {
+    opacity: 0,
+    duration: 0.35,
+    ease: "power2.inOut",
+    onComplete: () => {
+      // Small delay to reduce flicker across browsers
+      animFrame.src = newSrc;
+      // once new src is set, fade in
+      gsap.to(animFrame, { opacity: 1, duration: 0.45, ease: "power2.out" });
+    },
+  });
+}
+
+/* UPDATE CARD */
 function updateCard(offset, direction = 1) {
   if (!weatherData) return;
 
@@ -144,13 +203,12 @@ function updateCard(offset, direction = 1) {
   if (!d) return;
 
   const tl = gsap.timeline();
-
   gsap.set(infoContent, { y: 0 });
 
   tl.to(infoContent, {
     y: direction * -30,
     opacity: 0,
-    duration: 0.4,
+    duration: 0.35,
     ease: "power2.inOut",
     onComplete: () => {
       mTemp.textContent = `${d.t} °C`;
@@ -164,15 +222,19 @@ function updateCard(offset, direction = 1) {
   }).fromTo(
     infoContent,
     { y: direction * 30, opacity: 0 },
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.4,
-      ease: "power2.out",
-    }
+    { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }
   );
+
+  const category = categoryFromSummary(d);
+  const targetSrc = `weather_cards/${category}.html`;
+
+  // compare by pathname end because animFrame.src may be absolute URL
+  if (!animFrame.src || !animFrame.src.endsWith(targetSrc)) {
+    smoothSwapIframe(targetSrc);
+  }
 }
 
+/* MAP CLICK */
 map.on("click", async (e) => {
   const { lat, lng } = e.lngLat;
 
@@ -203,14 +265,13 @@ map.on("click", async (e) => {
 
     cardTitle.textContent = locationName;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
-
-    animFrame.src = "weather_cards/foggy.html";
-  } catch {
+  } catch (err) {
+    console.error(err);
     cardTitle.textContent = "Error fetching data.";
   }
 });
 
-// FIXED SCROLL LOGIC
+/* SCROLL DAYS */
 card.addEventListener("wheel", (e) => {
   if (!weatherData) return;
 
