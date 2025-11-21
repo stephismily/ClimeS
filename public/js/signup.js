@@ -9,14 +9,11 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   msg.textContent = "Creating account...";
   msg.style.color = "#2b88c6";
 
-  const response = await fetch(
-    "https://climes-backend.onrender.com/auth/signup",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    }
-  );
+  const response = await fetch(" https://climes.onrender.com/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password }),
+  });
 
   const data = await response.json();
 
