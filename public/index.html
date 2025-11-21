@@ -5,7 +5,7 @@
     <title></title>
 
     <!-- External CSS -->
-    <link rel="stylesheet" href="public/css/intro.css" />
+    <link rel="stylesheet" href="css/intro.css" />
 
     <script type="importmap">
       {
@@ -25,8 +25,8 @@
 
       <nav class="nav-links">
         <a href="#">Home</a>
-        <a href="public/html/globe.html">Weather</a>
-        <a href="public/html/team.html">Our Team</a>
+        <a href="html/globe.html">Weather</a>
+        <a href="html/team.html">Our Team</a>
       </nav>
 
       <!-- 👇 Dynamic Auth Buttons -->
@@ -42,11 +42,11 @@
 
     <!-- 🌍 Globe Section -->
     <div class="globe-section" id="globeSection">
-      <iframe src="public/html/globe.html" class="globe-frame"></iframe>
+      <iframe src="html/globe.html" class="globe-frame"></iframe>
     </div>
 
     <!-- External JS -->
-    <script type="module" src="public/js/intro.js"></script>
+    <script type="module" src="js/intro.js"></script>
 
     <!-- GSAP ScrollTo Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
@@ -74,7 +74,7 @@
       } else {
         // 🚪 User NOT logged in
         authArea.innerHTML = `
-          <button onclick="window.location.href='public/html/login.html'">
+          <button onclick="window.location.href='html/login.html'">
             Sign In / Sign Up
           </button>
         `;
