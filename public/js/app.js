@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <nav class="nav-links">
         <a href="../index.html">Home</a>
-        <a href="globe.html">Weather</a>
-        <a href="team.html">Our Team</a>
+        <a href="html/globe.html">Weather</a>
+        <a href="html/team.html">Our Team</a>
       </nav>
 
       <div class="auth-buttons" id="authArea"></div>
