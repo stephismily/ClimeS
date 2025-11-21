@@ -117,9 +117,9 @@ function codeToCategory(code) {
   if ([45, 48].includes(code)) return "foggy";
   if ([2].includes(code)) return "sunny"; // Partly cloudy -> sunny
   if ([0, 1].includes(code)) return "sunny";
-  if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return "rain";
+  if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return "rainy";
   if ([71, 73, 75].includes(code)) return "snowy";
-  if ([95, 96, 99].includes(code)) return "stormy";
+  if ([95, 96, 99].includes(code)) return "storm";
   return "sunny";
 }
 
