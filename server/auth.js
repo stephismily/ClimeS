@@ -59,8 +59,10 @@ router.post("/login", async (req, res) => {
       return res.json({ success: false, message: "User not found" });
     }
 
-    // Password check (plain text)
-    if (user.password !== password) {
+    // 👉 Compare entered password with hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
       return res.json({ success: false, message: "Incorrect password" });
     }
 
