@@ -1,4 +1,4 @@
-let temperature = 20;
+let temperature = 40;
 
 const sun = document.getElementById("sun");
 const mouth = document.getElementById("mouth");
