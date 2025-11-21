@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { User } from "./userModel.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const router = express.Router();
 
@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
       return res.json({ success: false, message: "User not found" });
     }
 
-    // 👉 Compare entered password with hashed password
+    // Compare entered password with hashed password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
