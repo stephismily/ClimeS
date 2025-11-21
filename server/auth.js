@@ -1,6 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import { User } from "./userModel.js";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
@@ -13,9 +14,6 @@ function generateToken(user) {
   );
 }
 
-// =============================
-//     USER SIGNUP
-// =============================
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -28,10 +26,12 @@ router.post("/signup", async (req, res) => {
       return res.json({ success: false, message: "Email already exists" });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const result = await User.create({
       name,
       email,
-      password, // plain text password (your request)
+      password: hashedPassword,
       createdAt: new Date(),
     });
 
@@ -46,9 +46,6 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// =============================
-//     USER LOGIN
-// =============================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
