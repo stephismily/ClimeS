@@ -58,7 +58,7 @@ body {
 .app.split .card {
   position: relative;
   left: auto;
-  top: auto;
+  top: 70px;
   transform: none;
   opacity: 1;
   pointer-events: auto;
