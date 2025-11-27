@@ -1,4 +1,4 @@
-let temperature = 40;
+let temperature = 0; // will be updated from globe.js
 
 const sun = document.getElementById("sun");
 const mouth = document.getElementById("mouth");
@@ -10,6 +10,9 @@ const allClouds = document.querySelectorAll(
   ".cloud, .main-cloud, .front-cloud"
 );
 
+/**************************************
+ * SUN IDLE ANIMATIONS
+ **************************************/
 gsap.to(sun, {
   y: "-=10",
   duration: 3,
@@ -32,6 +35,9 @@ gsap.to(sun, {
   ease: "sine.inOut",
 });
 
+/**************************************
+ * EYES BLINKING
+ **************************************/
 eyes.forEach((eye) => {
   gsap.to(eye, {
     scaleY: 0.2,
@@ -43,16 +49,21 @@ eyes.forEach((eye) => {
   });
 });
 
-// Background clouds animation
+/**************************************
+ * BACKGROUND CLOUD MOTION
+ **************************************/
 const clouds = document.querySelectorAll(".cloud");
 const card = document.querySelector(".weather-card");
+
 clouds.forEach((cloud) => {
   const randomStart = Math.random() * card.offsetWidth;
   const direction = Math.random() > 0.5 ? 1 : -1;
   const travel = 200 + Math.random() * 200;
   const duration = 10 + Math.random() * 6;
   const delay = Math.random() * 5;
+
   gsap.set(cloud, { x: randomStart * direction });
+
   gsap.to(cloud, {
     x: `+=${travel * direction}`,
     duration: duration,
@@ -61,6 +72,7 @@ clouds.forEach((cloud) => {
     yoyo: true,
     delay: delay,
   });
+
   gsap.to(cloud, {
     y: `+=${5 + Math.random() * 5}`,
     duration: 4 + Math.random() * 3,
@@ -70,13 +82,16 @@ clouds.forEach((cloud) => {
   });
 });
 
-// Eyes follow cursor
+/**************************************
+ * EYES FOLLOW CURSOR
+ **************************************/
 document.addEventListener("mousemove", (e) => {
   eyes.forEach((eye) => {
     const rect = eye.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     const angle = Math.atan2(e.clientY - cy, e.clientX - cx);
+
     gsap.to(eye, {
       x: Math.cos(angle) * 3,
       y: Math.sin(angle) * 3,
@@ -85,8 +100,17 @@ document.addEventListener("mousemove", (e) => {
   });
 });
 
+/**************************************
+ * UPDATE BACKGROUND WITH REPAINT FIX
+ **************************************/
 function updateBackground(temp) {
   const card = document.querySelector(".weather-card");
+
+  // 🔥 FORCE REPAINT — fixes Chrome/Safari gradient bug
+  card.style.display = "none";
+  card.offsetHeight; // force reflow
+  card.style.display = "";
+
   if (temp <= 30) {
     card.style.background = "linear-gradient(to top, #4facfe 0%, #dff6ff 100%)";
   } else {
@@ -94,8 +118,10 @@ function updateBackground(temp) {
   }
 }
 
+/**************************************
+ * UPDATE SUN COLOR
+ **************************************/
 function updateSunColor(temp) {
-  const sun = document.getElementById("sun");
   if (temp > 30) {
     sun.style.background =
       "radial-gradient(circle, #ffe27a 0%, #f7a04b 60%, #f68a6d 90%)";
@@ -104,11 +130,16 @@ function updateSunColor(temp) {
   }
 }
 
+/**************************************
+ * MOOD LOGIC
+ **************************************/
 function applyMood(temp) {
   gsap.killTweensOf(sweat);
   gsap.killTweensOf(mainCloud);
   gsap.killTweensOf(frontCloud);
+
   gsap.to(allClouds, { opacity: 1, duration: 1, display: "block" });
+
   updateBackground(temp);
   updateSunColor(temp);
 
@@ -119,6 +150,7 @@ function applyMood(temp) {
       borderRadius: "0 0 40px 40px",
       duration: 0.4,
     });
+
     gsap.to(mainCloud, {
       y: "+=6",
       duration: 4,
@@ -126,6 +158,7 @@ function applyMood(temp) {
       yoyo: true,
       ease: "sine.inOut",
     });
+
     gsap.to(frontCloud, {
       y: "-=5",
       duration: 5,
@@ -133,6 +166,7 @@ function applyMood(temp) {
       yoyo: true,
       ease: "sine.inOut",
     });
+
     gsap.to(sun, {
       left: "30%",
       top: "18%",
@@ -146,6 +180,7 @@ function applyMood(temp) {
       width: "52%",
       duration: 0.4,
     });
+
     gsap.to(sun, {
       left: "30%",
       top: "18%",
@@ -159,6 +194,7 @@ function applyMood(temp) {
       width: "35%",
       duration: 0.4,
     });
+
     gsap.to(sweat, {
       opacity: 1,
       scale: 1,
@@ -167,20 +203,24 @@ function applyMood(temp) {
       repeat: -1,
       yoyo: true,
     });
+
     gsap.to(sun, {
       left: "50%",
       top: "22%",
       duration: 1.5,
       ease: "sine.inOut",
     });
+
     allClouds.forEach((cloud) => {
       cloud.style.zIndex = 0;
+
       gsap.to(cloud, {
         opacity: 0.2 + Math.random() * 0.2,
         duration: 2,
         delay: Math.random() * 2,
         display: "block",
       });
+
       gsap.to(cloud, {
         x: "+=" + (100 + Math.random() * 150),
         y: "+=" + (3 + Math.random() * 4),
@@ -199,15 +239,18 @@ function applyMood(temp) {
       background: "#600",
       duration: 0.4,
     });
+
     gsap.to(sweat, {
       opacity: 1,
       scale: 1.1,
       y: "+=22",
       duration: 1,
-      yoyo: true,
       repeat: -1,
+      yoyo: true,
     });
+
     gsap.to(allClouds, { opacity: 0.2, duration: 1.5, display: "block" });
+
     gsap.to(sun, {
       left: "50%",
       top: "22%",
@@ -217,4 +260,18 @@ function applyMood(temp) {
   }
 }
 
-applyMood(temperature);
+/**************************************
+ * RECEIVE MESSAGES FROM IFRAME HOST
+ **************************************/
+window.addEventListener("message", (event) => {
+  // Receive temperature
+  if (event.data.type === "setTemp") {
+    temperature = event.data.temp;
+    applyMood(temperature);
+  }
+
+  // 🔥 Fix: run applyMood again after iframe is fully ready
+  if (event.data.type === "reapplyTemp") {
+    setTimeout(() => applyMood(temperature), 50);
+  }
+});

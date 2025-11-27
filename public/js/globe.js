@@ -28,6 +28,11 @@ const infoContent = document.getElementById("infoContent");
 let currentOffset = 0;
 let weatherData = null;
 
+/* FIX: Reapply temperature after iframe loads */
+animFrame.onload = () => {
+  animFrame.contentWindow.postMessage({ type: "reapplyTemp" }, "*");
+};
+
 /* MAP LOCK / UNLOCK */
 function lockGlobe() {
   map.dragPan.disable();
@@ -107,15 +112,11 @@ function codeToText(code) {
   return map[code] || "Unknown";
 }
 
-/* WEATHER CODE → 5 CATEGORY ANIMATIONS
-   Updated mapping:
-   - code 2 (Partly cloudy) => sunny
-   - code 3 (Overcast) => foggy
-*/
+/* WEATHER CODE → CATEGORY */
 function codeToCategory(code) {
-  if ([3].includes(code)) return "foggy"; // Overcast -> foggy
+  if ([3].includes(code)) return "foggy";
   if ([45, 48].includes(code)) return "foggy";
-  if ([2].includes(code)) return "sunny"; // Partly cloudy -> sunny
+  if ([2].includes(code)) return "sunny";
   if ([0, 1].includes(code)) return "sunny";
   if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return "rainy";
   if ([71, 73, 75].includes(code)) return "snowy";
@@ -123,7 +124,7 @@ function codeToCategory(code) {
   return "sunny";
 }
 
-/* Combined logic → if temp < 5°C force snowy */
+/* CATEGORY FROM SUMMARY */
 function categoryFromSummary(summary) {
   if (!summary) return "sunny";
 
@@ -177,9 +178,8 @@ function summarizeDay(data, offset) {
   };
 }
 
-/* SMOOTH TRANSITION FOR IFRAME */
+/* IFRAME SWAP */
 function smoothSwapIframe(newSrc) {
-  // Ensure element has explicit opacity for gsap to animate consistently
   if (!animFrame.style.opacity) animFrame.style.opacity = "1";
 
   gsap.to(animFrame, {
@@ -187,9 +187,7 @@ function smoothSwapIframe(newSrc) {
     duration: 0.35,
     ease: "power2.inOut",
     onComplete: () => {
-      // Small delay to reduce flicker across browsers
       animFrame.src = newSrc;
-      // once new src is set, fade in
       gsap.to(animFrame, { opacity: 1, duration: 0.45, ease: "power2.out" });
     },
   });
@@ -228,10 +226,15 @@ function updateCard(offset, direction = 1) {
   const category = categoryFromSummary(d);
   const targetSrc = `weather_cards/${category}.html`;
 
-  // compare by pathname end because animFrame.src may be absolute URL
   if (!animFrame.src || !animFrame.src.endsWith(targetSrc)) {
     smoothSwapIframe(targetSrc);
   }
+
+  // 🔥 Send temperature to iframe (sunny.js)
+  animFrame.contentWindow.postMessage(
+    { type: "setTemp", temp: Number(d.t) },
+    "*"
+  );
 }
 
 /* MAP CLICK */
