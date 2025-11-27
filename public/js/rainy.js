@@ -45,13 +45,17 @@ eyes.forEach((eye) => {
 
 // 🌧️ Raindrops fall
 document.querySelectorAll(".raindrop").forEach((drop) => {
-  gsap.set(drop, { y: -30 - Math.random() * 50 });
+  const startTop = parseFloat(drop.style.top);
+  const startPixels = (startTop / 100) * window.innerHeight;
   gsap.to(drop, {
-    y: "+=280",
-    duration: 1 + Math.random() * 0.6,
+    top: window.innerHeight,
+    duration: 2.5 + Math.random() * 1,
     ease: "linear",
     repeat: -1,
     delay: Math.random() * 2,
+    onRepeat: () => {
+      gsap.set(drop, { top: startPixels });
+    },
   });
 });
 
