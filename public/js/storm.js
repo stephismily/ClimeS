@@ -54,7 +54,6 @@ drops.forEach((drop) => {
   const duration = 0.5 + Math.random() * 0.3;
   gsap.set(drop, { y: -40 - Math.random() * 60 });
   gsap.to(drop, {
-    top: window.innerHeight,
     y: "+=460",
     duration,
     ease: "linear",
