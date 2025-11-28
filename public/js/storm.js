@@ -52,7 +52,7 @@ const drops = document.querySelectorAll(".raindrop");
 drops.forEach((drop) => {
   const delay = Math.random();
   const duration = 0.5 + Math.random() * 0.3;
-  gsap.set(drop, { y: -40 - Math.random() * 60 });
+  gsap.set(drop, { y: -40 - Math.random() * 60, top: window.innerHeight });
   gsap.to(drop, { y: "+=460", duration, ease: "linear", repeat: -1, delay });
 });
 
