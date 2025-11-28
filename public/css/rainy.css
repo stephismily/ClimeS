@@ -121,22 +121,3 @@ body {
   z-index: 2;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
 }
-
-/* 🌡️ Info text */
-.weather-info {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  color: #222;
-  font-weight: 600;
-}
-
-.temperature {
-  font-size: 2.5em;
-  margin-bottom: 8px;
-}
-
-.city {
-  font-size: 1.2em;
-  margin-bottom: 6px;
-}
