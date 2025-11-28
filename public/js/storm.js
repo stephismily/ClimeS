@@ -39,12 +39,12 @@ gsap.to(".bg-cloud.three", {
 
 // 😱 Trembling mouth
 gsap.to(mouth, {
-  scaleY: 1.6,
-  scaleX: 0.8,
+  y: "+=2",
+  x: "+=1",
   yoyo: true,
   repeat: -1,
-  duration: 0.3,
-  ease: "elastic.inOut(1, 0.5)",
+  duration: 0.08,
+  ease: "sine.inOut",
 });
 
 // 🌧️ Heavy rain

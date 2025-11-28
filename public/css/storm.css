@@ -45,34 +45,34 @@ body {
   overflow: hidden;
 }
 
-/* ☁️ Background moving clouds */
+/* ☁️ Background moving clouds — now with rainy-style blur */
 .bg-cloud {
   position: absolute;
   top: 25%;
-  width: 180px;
-  opacity: 0.4;
-  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+  width: 200px;
+  opacity: 0.55;
+  filter: blur(3px);
   z-index: 1;
+  transform: scale(1.2);
 }
 
+/* Make sure the SVG path color matches rainy fog style */
 .bg-cloud svg path {
-  fill: #8b99a5;
+  fill: #d8d5d5;
 }
 
+/* Cloud positions */
 .bg-cloud.one {
   left: -200px;
   top: 20%;
-  transform: scale(0.8);
 }
 .bg-cloud.two {
-  left: -300px;
-  top: 40%;
-  transform: scale(1);
+  left: -280px;
+  top: 38%;
 }
 .bg-cloud.three {
   left: -150px;
-  top: 10%;
-  transform: scale(1.2);
+  top: 12%;
 }
 
 /* ☁️ Main SVG Storm Cloud */
@@ -94,50 +94,52 @@ body {
 /* 👀 Face */
 .face {
   position: absolute;
-  top: 30%;
+  top: 28%; /* slightly higher inside the cloud */
   left: 0;
   right: 0;
   text-align: center;
 }
 
+/* Eyes */
 .eye {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background: #fff;
   border-radius: 50%;
   position: absolute;
-  top: 15px;
+  top: 12px; /* closer to cloud center */
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4) inset;
   overflow: hidden;
-  box-shadow: 0 0 3px #000 inset;
 }
 
+/* Eye positions — closer together, looks better */
+.eye.left {
+  left: 85px;
+}
+
+.eye.right {
+  right: 85px;
+}
+
+/* Pupils — slightly down/centered to look "worried" */
 .pupil {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background: #000;
   border-radius: 50%;
   position: absolute;
   top: 6px;
   left: 6px;
-  transition: all 0.15s ease-out;
+  transition: all 0.15s ease;
 }
 
-.eye.left {
-  left: 70px;
-}
-.eye.right {
-  right: 70px;
-}
-
-/* 😱 Scared mouth */
+/* 😨 Mouth — new shape */
 .mouth {
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 6px;
   background: #111;
-  border-radius: 50%;
-  margin: 45px auto 0;
-  border: 2px solid #555;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3) inset;
+  border-radius: 3px;
+  margin: 46px auto 0;
 }
 
 /* 🌧️ Raindrops */
