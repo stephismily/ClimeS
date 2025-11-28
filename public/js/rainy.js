@@ -1,5 +1,6 @@
 const cloudFace = document.getElementById("cloudFace");
 const eyes = document.querySelectorAll(".eye");
+const pupils = document.querySelectorAll(".pupil");
 
 // ☁️ Floating cloud
 gsap.to(cloudFace, {
@@ -33,15 +34,15 @@ gsap.utils.toArray(".bg-cloud").forEach((cloud, i) => {
 });
 
 // 👀 Eye blinking
-eyes.forEach((eye) => {
-  gsap.to(eye, {
-    scaleY: 0.3,
-    duration: 0.15,
-    repeat: -1,
-    yoyo: true,
-    repeatDelay: 3,
-  });
-});
+// eyes.forEach((eye) => {
+//   gsap.to(eye, {
+//     scaleY: 0.3,
+//     duration: 0.15,
+//     repeat: -1,
+//     yoyo: true,
+//     repeatDelay: 3,
+//   });
+// });
 
 // 🌧️ Raindrops fall
 document.querySelectorAll(".raindrop").forEach((drop) => {
@@ -68,7 +69,7 @@ document.addEventListener("mousemove", (e) => {
   const dx = (e.clientX - centerX) / 40;
   const dy = (e.clientY - centerY) / 40;
 
-  eyes.forEach((eye) => {
-    eye.style.transform = `translate(${dx}px, ${dy}px)`;
+  pupils.forEach((p) => {
+    p.style.transform = `translate(${dx}px, ${dy}px)`;
   });
 });
