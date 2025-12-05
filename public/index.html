@@ -20,53 +20,49 @@
       }
     </script>
   </head>
-  <body>
-    <canvas id="canvas"></canvas>
 
-    <!-- ⬇️ Removed overlay + explore button as requested -->
-    <!-- <div class="overlay">Embark on Your Cosmic Journey</div>
-    <button class="explore-btn" id="exploreBtn">Explore the Universe</button> -->
+  <body>
+    <!-- 🌟 GLASS WELCOME BOX -->
+    <div id="welcomeContainer" class="welcome-container">
+      <h1 id="welcomeTitle" class="welcome-title"></h1>
+      <p id="welcomeText" class="welcome-text"></p>
+    </div>
+
+    <canvas id="canvas"></canvas>
 
     <div class="scroll-area"></div>
 
     <!-- 🌍 Globe Section -->
     <div class="globe-section" id="globeSection">
-      <!-- globe.html is in the same folder as index.html -->
       <iframe src="globe.html" class="globe-frame"></iframe>
     </div>
 
     <!-- External JS -->
     <script type="module" src="js/intro.js"></script>
-
-    <!-- GSAP ScrollTo Plugin (now unused but harmless to keep) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
-    <!-- AUTH LOGIC (unchanged) -->
+    <!-- AUTH + WELCOME LOGIC -->
     <script>
-      const authArea = document.getElementById("authArea");
+      const welcomeContainer = document.getElementById("welcomeContainer");
+      const welcomeTitle = document.getElementById("welcomeTitle");
+      const welcomeText = document.getElementById("welcomeText");
+
       const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user") || "null");
 
       if (token && user) {
-        // ⭐ User Logged In
-        authArea.innerHTML = `
-          <span style="color:white; margin-right:15px;">
-            Hi, ${user.name}
-          </span>
-          <button id="logoutBtn">Logout</button>
+        welcomeTitle.innerHTML = `Welcome <span class="user-name">${user.name}</span>!`;
+        welcomeText.innerHTML = `
+          Dive into an immersive cinematic weather experience designed to bring Earth's climate to life.
+          Explore dynamic atmospheric patterns, real-time weather data, and beautifully animated visuals. <br><br>
+          <strong>Scroll down to zoom into the interactive 3D globe and discover weather conditions around the world.</strong>
         `;
-
-        document.getElementById("logoutBtn").addEventListener("click", () => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.reload();
-        });
       } else {
-        // 🚪 User NOT logged in
-        authArea.innerHTML = `
-          <button onclick="window.location.href='html/login.html'">
-            Sign In / Sign Up
-          </button>
+        welcomeTitle.innerHTML = `Welcome!`;
+        welcomeText.innerHTML = `
+          Step into a visually stunning journey through Earth’s weather systems with an intuitive and interactive 3D globe.
+          Discover global climate insights, animated forecasts, and real-time atmospheric patterns. <br><br>
+          <strong>Scroll down to zoom into the globe and find detailed weather information.</strong>
         `;
       }
     </script>

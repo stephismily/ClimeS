@@ -6,6 +6,7 @@ body {
   font-family: "Poppins", sans-serif;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  color: #fff; /* default page text white */
 }
 
 #canvas {
@@ -18,52 +19,91 @@ body {
   z-index: 0;
 }
 
-.overlay {
+/* 🌟 GLASS WELCOME CONTAINER (centered & transparent) */
+.welcome-container {
   position: fixed;
-  top: 40%;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-size: 2.6em;
-  letter-spacing: 1px;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 1s;
-  z-index: 10;
-}
-
-/* 🌟 Explore button */
-.explore-btn {
-  position: fixed;
-  top: 60%;
+  top: 16%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
-  padding: 14px 36px;
-  border-radius: 30px;
-  font-size: 1.3em;
-  font-weight: 600;
-  cursor: pointer;
+  width: 60%;
+  max-width: 900px;
+  min-width: 320px;
+  padding: 28px 36px;
+  text-align: left;
+  z-index: 30;
+  pointer-events: none;
+
+  /* subtle transparent glass (very light tint, mostly transparent) */
+  background: rgba(255, 255, 255, 0.03); /* almost transparent */
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* ensure text inside is white and visible */
+.welcome-container,
+.welcome-container * {
+  color: #ffffff !important;
+}
+
+/* 🌟 MAIN HEADING (larger, white) */
+.welcome-title {
+  font-size: 3.1em;
+  font-weight: 700;
+  margin: 0 0 10px 0;
   letter-spacing: 1px;
-  transition: all 0.4s ease;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-  z-index: 15;
+  line-height: 1.02;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.06);
 }
 
-.explore-btn:hover {
-  background: #2b88c6;
-  box-shadow: 0 0 20px #2b88c6;
-  transform: translateX(-50%) scale(1.05);
+/* username highlight */
+.user-name {
+  color: #bfe9ff; /* soft cyan tint for highlight */
+  text-shadow: 0 0 14px rgba(43, 136, 198, 0.18);
 }
 
+/* 🌟 DESCRIPTION TEXT (slightly smaller and justified) */
+.welcome-text {
+  margin-top: 12px;
+  font-size: 1.12em;
+  line-height: 1.65em;
+  max-width: 100%;
+  opacity: 0.98;
+  text-align: justify;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+}
+
+/* adapt for smaller screens */
+@media (max-width: 880px) {
+  .welcome-container {
+    width: calc(100% - 36px);
+    left: 50%;
+    transform: translateX(-50%);
+    top: 12%;
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .welcome-title {
+    font-size: 2.3em;
+  }
+
+  .welcome-text {
+    font-size: 1em;
+  }
+}
+
+/* SCROLL AREA */
 .scroll-area {
   position: relative;
   z-index: 5;
-  height: 1000vh; /* Long scroll for travel effect */
+  height: 1000vh;
 }
 
+/* GLOBE APPEAR ANIMATION */
 .globe-section {
   height: 100vh;
   background: #000;
@@ -71,13 +111,15 @@ body {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: translateY(100px);
+  transform: translateY(40px);
   transition: opacity 1s ease, transform 1s ease;
+  pointer-events: none;
 }
 
 .globe-section.visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .globe-frame {
@@ -86,35 +128,15 @@ body {
   border: none;
 }
 
-/* second block (you already had this) */
-html,
-body {
-  margin: 0;
-  height: 100%;
-  background: black;
-  font-family: "Poppins", sans-serif;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-}
-
-#canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 0;
-}
-
+/* HEADER (unchanged) */
 header {
   position: fixed;
   top: 0;
   width: 100%;
   height: 70px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -128,7 +150,7 @@ header {
   font-weight: 700;
   color: #fff;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
   cursor: pointer;
 }
 
@@ -144,7 +166,6 @@ header {
   font-weight: 500;
   font-size: 1em;
   transition: all 0.3s ease;
-  position: relative;
 }
 
 .nav-links a:hover {
@@ -153,8 +174,8 @@ header {
 }
 
 .auth-buttons button {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: #fff;
   padding: 8px 18px;
   border-radius: 20px;
@@ -167,74 +188,4 @@ header {
   background: #2b88c6;
   color: #fff;
   box-shadow: 0 0 12px rgba(43, 136, 198, 0.6);
-}
-
-.overlay {
-  position: fixed;
-  top: 40%;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-size: 2.6em;
-  letter-spacing: 1px;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 1s;
-  z-index: 10;
-}
-
-/* 🌟 Explore button */
-.explore-btn {
-  position: fixed;
-  top: 60%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
-  padding: 14px 36px;
-  border-radius: 30px;
-  font-size: 1.3em;
-  font-weight: 600;
-  cursor: pointer;
-  letter-spacing: 1px;
-  transition: all 0.4s ease;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-  z-index: 15;
-}
-
-.explore-btn:hover {
-  background: #2b88c6;
-  box-shadow: 0 0 20px #2b88c6;
-  transform: translateX(-50%) scale(1.05);
-}
-
-.scroll-area {
-  position: relative;
-  z-index: 5;
-  height: 1000vh; /* Long scroll for travel effect */
-}
-
-.globe-section {
-  height: 100vh;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transform: translateY(40px);         /* slightly smaller offset */
-  transition: opacity 1s ease, transform 1s ease;
-  pointer-events: none;                /* disabled until visible */
-}
-
-.globe-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.globe-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
 }
