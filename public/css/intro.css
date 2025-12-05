@@ -85,8 +85,6 @@ body {
   height: 100%;
   border: none;
 }
-
-/* second block (you already had this) */
 html,
 body {
   margin: 0;
@@ -222,15 +220,13 @@ header {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: translateY(40px);         /* slightly smaller offset */
+  transform: translateY(100px);
   transition: opacity 1s ease, transform 1s ease;
-  pointer-events: none;                /* disabled until visible */
 }
 
 .globe-section.visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
 }
 
 .globe-frame {

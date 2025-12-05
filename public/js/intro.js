@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "ScrollTrigger";
-
 gsap.registerPlugin(ScrollTrigger);
 
 const canvas = document.getElementById("canvas");
@@ -58,7 +57,7 @@ function animate() {
 }
 animate();
 
-// 🎬 Scroll zoom animation (only camera zoom now, no overlay)
+// 🎬 Scroll zoom animation
 gsap.to(camera.position, {
   z: 300,
   ease: "power2.inOut",
@@ -66,30 +65,36 @@ gsap.to(camera.position, {
     trigger: ".scroll-area",
     start: "top top",
     end: "bottom bottom",
-    scrub: 2
+    scrub: 2,
+    onEnter: () => gsap.to(".overlay", { opacity: 1, duration: 1 }),
+    onLeave: () => gsap.to(".overlay", { opacity: 0, duration: 1 }),
+    onEnterBack: () => gsap.to(".overlay", { opacity: 1, duration: 1 }),
+    onLeaveBack: () => gsap.to(".overlay", { opacity: 0, duration: 1 }),
   },
 });
 
-// 🌍 Globe section (we only reveal it based on scroll)
+// 🚀 Explore button triggers smooth scroll
+const exploreBtn = document.getElementById("exploreBtn");
 const globeSection = document.getElementById("globeSection");
 
-// When user scrolls to the end of the scroll-area, smoothly cross-fade to globe
-ScrollTrigger.create({
-  trigger: ".scroll-area",
-  start: "bottom bottom",
-  once: true,
-  onEnter: () => {
-    // 1) fade IN globe (uses CSS transition + visible class)
-    globeSection.classList.add("visible");
+exploreBtn.addEventListener("click", () => {
+  gsap.to(".overlay", { opacity: 0, duration: 1 });
+  gsap.to(".explore-btn", { opacity: 0, y: 50, duration: 1 });
+  gsap.to(window, {
+    scrollTo: { y: document.body.scrollHeight, autoKill: false },
+    duration: 5,
+    ease: "power4.inOut",
+    onUpdate: () => {
+      camera.position.z -= 10;
+    },
+    onComplete: () => {
+      globeSection.classList.add("visible");
+    },
+  });
+});
 
-    // 2) cross-fade OUT the 3D intro canvas
-    gsap.to(canvas, {
-      opacity: 0,
-      duration: 1.2,
-      ease: "power2.out",
-      onComplete: () => {
-        canvas.style.display = "none";   // remove it so globe is fully interactive
-      }
-    });
-  }
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });

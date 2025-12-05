@@ -163,8 +163,3 @@ body {
   font-weight: 700;
   color: #333;
 }
-
-/* When globe is embedded inside the intro iframe, hide its own header */
-body.embedded header {
-  display: none;
-}
