@@ -28,9 +28,9 @@ const infoContent = document.getElementById("infoContent");
 let currentOffset = 0;
 let weatherData = null;
 
-/* FIX: Reapply temperature after iframe loads */
+/* Reapply temp after iframe loads */
 animFrame.onload = () => {
-  animFrame.contentWindow.postMessage({ type: "reapplyTemp" }, "*");
+  animFrame.contentWindow?.postMessage({ type: "reapplyTemp" }, "*");
 };
 
 /* MAP LOCK / UNLOCK */
@@ -48,6 +48,7 @@ function unlockGlobe() {
   map.touchZoomRotate.enable();
 }
 
+// start with globe interactive
 unlockGlobe();
 
 /* UI BUTTONS */
@@ -59,29 +60,46 @@ closeBtn.onclick = () => {
 
 splitBtn.onclick = () => {
   app.classList.toggle("split");
-  if (app.classList.contains("split")) unlockGlobe();
-  else lockGlobe();
+
+  // In split view, always allow rotation
+  if (app.classList.contains("split")) {
+    unlockGlobe();
+  } else {
+    // Center view: if card is open, lock globe behind it
+    if (card.classList.contains("visible")) {
+      lockGlobe();
+    } else {
+      unlockGlobe();
+    }
+  }
 };
 
-/* FETCH WEATHER APIS */
+/* FETCH WEATHER (Open-Meteo) */
 async function fetchWeather(lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weathercode&past_days=1&forecast_days=2&timezone=auto`;
   const res = await fetch(url);
   return res.json();
 }
 
+/* 🔎 LOCATION NAME (Mapbox Geocoding) */
 async function getLocationName(lat, lon) {
-  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`;
-  const res = await fetch(url);
-  const data = await res.json();
+  try {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?limit=1&access_token=${MAPBOX_TOKEN}`;
+    const res = await fetch(url);
+    const data = await res.json();
 
-  return (
-    data.city ||
-    data.locality ||
-    data.principalSubdivision ||
-    data.countryName ||
-    "Unknown Location"
-  );
+    const feature = data.features && data.features[0];
+    if (!feature) {
+      // fallback: just show coordinates as title
+      return `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
+    }
+
+    // nice clean name like "Colombo, Sri Lanka"
+    return feature.place_name || `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
+  } catch (e) {
+    console.error("Reverse geocode failed:", e);
+    return `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
+  }
 }
 
 /* WEATHER CODE → TEXT */
@@ -230,22 +248,75 @@ function updateCard(offset, direction = 1) {
     smoothSwapIframe(targetSrc);
   }
 
-  // 🔥 Send temperature to iframe (sunny.js)
-  animFrame.contentWindow.postMessage(
+  animFrame.contentWindow?.postMessage(
     { type: "setTemp", temp: Number(d.t) },
     "*"
   );
 }
 
+/* Helper: is click point inside the visible globe circle */
+function isPointOnGlobe(point) {
+  const rect = map.getContainer().getBoundingClientRect();
+  const cx = rect.width / 2;
+  const cy = rect.height / 2;
+  const dx = point.x - cx;
+  const dy = point.y - cy;
+  const r = Math.min(rect.width, rect.height) / 2;
+  return dx * dx + dy * dy <= r * r;
+}
+
+/* 🛡️ Prevent card on drag vs real click */
+let dragStartPoint = null;
+let dragMoved = false;
+
+map.on("mousedown", (e) => {
+  dragStartPoint = e.point;
+  dragMoved = false;
+});
+
+map.on("mousemove", (e) => {
+  if (!dragStartPoint) return;
+  const dx = e.point.x - dragStartPoint.x;
+  const dy = e.point.y - dragStartPoint.y;
+  const distSq = dx * dx + dy * dy;
+  if (distSq > 9) {
+    // threshold ~3px
+    dragMoved = true;
+  }
+});
+
+map.on("mouseup", () => {
+  dragStartPoint = null;
+});
+
 /* MAP CLICK */
 map.on("click", async (e) => {
+  // ignore if user was dragging
+  if (dragMoved) {
+    dragMoved = false;
+    return;
+  }
+
+  // ignore clicks outside the globe circle
+  if (!isPointOnGlobe(e.point)) {
+    return;
+  }
+
   const { lat, lng } = e.lngLat;
 
-  if (card.classList.contains("visible") && !app.classList.contains("split"))
+  // If card is already visible and not in split mode, do nothing
+  if (card.classList.contains("visible") && !app.classList.contains("split")) {
     return;
+  }
 
   card.classList.add("visible");
-  lockGlobe();
+
+  // Centered view: lock globe behind card, split view: keep interactive
+  if (app.classList.contains("split")) {
+    unlockGlobe();
+  } else {
+    lockGlobe();
+  }
 
   cardTitle.textContent = "Loading...";
   cardCoords.textContent = "";
@@ -266,11 +337,14 @@ map.on("click", async (e) => {
 
     updateCard(0);
 
+    // ✅ title = name (from Mapbox), sub = lat/lon
     cardTitle.textContent = locationName;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
   } catch (err) {
     console.error(err);
-    cardTitle.textContent = "Error fetching data.";
+    // fallback: still show coords, but no "Unknown location"
+    cardTitle.textContent = `Lat ${lat.toFixed(2)}, Lon ${lng.toFixed(2)}`;
+    cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
   }
 });
 
