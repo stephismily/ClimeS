@@ -22,22 +22,26 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <div class="overlay">Embark on Your Cosmic Journey</div>
-    <button class="explore-btn" id="exploreBtn">Explore the Universe</button>
+
+    <!-- ⬇️ Removed overlay + explore button as requested -->
+    <!-- <div class="overlay">Embark on Your Cosmic Journey</div>
+    <button class="explore-btn" id="exploreBtn">Explore the Universe</button> -->
+
     <div class="scroll-area"></div>
 
     <!-- 🌍 Globe Section -->
     <div class="globe-section" id="globeSection">
-      <iframe src="html/globe.html" class="globe-frame"></iframe>
+      <!-- globe.html is in the same folder as index.html -->
+      <iframe src="globe.html" class="globe-frame"></iframe>
     </div>
 
     <!-- External JS -->
     <script type="module" src="js/intro.js"></script>
 
-    <!-- GSAP ScrollTo Plugin -->
+    <!-- GSAP ScrollTo Plugin (now unused but harmless to keep) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
-    <!-- AUTH LOGIC -->
+    <!-- AUTH LOGIC (unchanged) -->
     <script>
       const authArea = document.getElementById("authArea");
       const token = localStorage.getItem("token");
