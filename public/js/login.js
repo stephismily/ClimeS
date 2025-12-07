@@ -18,11 +18,15 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const data = await response.json();
 
     if (data.success) {
+      // --- SUCCESS MESSAGE ---
       msg.style.color = "#4caf50";
       msg.textContent = "Login successful! Redirecting...";
 
-      localStorage.setItem("authToken", data.token);
+      // --- STORE LOGIN STATE ---
+      localStorage.setItem("token", data.token); // ✔ app.js looks for this
+      localStorage.setItem("user", JSON.stringify(data.user)); // ✔ includes name
 
+      // --- REDIRECT ---
       setTimeout(() => {
         window.location.href = "index.html";
       }, 1200);
