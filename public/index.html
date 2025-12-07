@@ -2,17 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>ClimeS — Cinematic Weather</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClimeS</title>
 
-    <!-- Intro / Landing CSS -->
+    <!-- External CSS -->
     <link rel="stylesheet" href="css/intro.css" />
-    <!-- Optional shared styles (if you already use app.css elsewhere) -->
-    <!-- <link rel="stylesheet" href="css/app.css" /> -->
-
+    <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="images/icon.png" />
 
-    <!-- Import map for Three.js + GSAP ScrollTrigger -->
+    <script src="js/app.js"></script>
+
     <script type="importmap">
       {
         "imports": {
@@ -26,59 +24,26 @@
   </head>
 
   <body>
-    <!-- Fixed glass header -->
-    <header>
-      <div class="logo" onclick="window.location.href='index.html'">
-        ClimeS
-      </div>
-
-      <nav class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#globeSection">Globe</a>
-        <a href="#about">About</a>
-      </nav>
-
-      <div class="auth-buttons">
-        <button onclick="window.location.href='login.html'">Login</button>
-        <button onclick="window.location.href='signup.html'">Sign Up</button>
-      </div>
-    </header>
-
     <!-- 🌟 GLASS WELCOME BOX -->
     <div id="welcomeContainer" class="welcome-container">
-      <h1 id="welcomeTitle" class="welcome-title">
-        Welcome!
-      </h1>
-      <p id="welcomeText" class="welcome-text">
-        Step into a visually stunning journey through Earth’s weather systems
-        with an intuitive and interactive 3D globe. Discover global climate
-        insights, animated forecasts, and real-time atmospheric patterns.
-        <br /><br />
-        <strong
-          >Scroll down to zoom into the globe and find detailed weather
-          information.</strong
-        >
-      </p>
+      <h1 id="welcomeTitle" class="welcome-title"></h1>
+      <p id="welcomeText" class="welcome-text"></p>
     </div>
 
-    <!-- 3D Starfield / Intro Canvas -->
     <canvas id="canvas"></canvas>
 
-    <!-- Big scroll section to drive ScrollTrigger -->
-    <div class="scroll-area" id="features"></div>
+    <div class="scroll-area"></div>
 
     <!-- 🌍 Globe Section -->
     <div class="globe-section" id="globeSection">
       <iframe src="globe.html" class="globe-frame"></iframe>
     </div>
 
-    <!-- Dummy section to anchor "About" link -->
-    <div id="about" style="height: 40vh;"></div>
-
-    <!-- Intro logic: starfield + scroll + globe fade -->
+    <!-- External JS -->
     <script type="module" src="js/intro.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
-    <!-- Optional: welcome text based on auth (token/user in localStorage) -->
+    <!-- AUTH + WELCOME LOGIC -->
     <script>
       const welcomeContainer = document.getElementById("welcomeContainer");
       const welcomeTitle = document.getElementById("welcomeTitle");

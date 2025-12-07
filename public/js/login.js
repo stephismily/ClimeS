@@ -6,20 +6,21 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const msg = document.getElementById("message");
 
   msg.textContent = "Checking credentials...";
-  msg.style.color = "#2aa8ff";
+  msg.style.color = "#2b88c6";
 
   try {
-    const res = await fetch("https://climes.onrender.com/auth/login", {
+    const response = await fetch("https://climes.onrender.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
+    const data = await response.json();
 
     if (data.success) {
       msg.style.color = "#4caf50";
       msg.textContent = "Login successful! Redirecting...";
+
       localStorage.setItem("authToken", data.token);
 
       setTimeout(() => {
@@ -27,11 +28,11 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       }, 1200);
     } else {
       msg.style.color = "#ff4444";
-      msg.textContent = data.message || "Login failed";
+      msg.textContent = data.message;
     }
-  } catch (err) {
+  } catch (error) {
     msg.style.color = "#ff4444";
     msg.textContent = "Server error. Try again.";
-    console.error(err);
+    console.error(error);
   }
 });

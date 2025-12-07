@@ -1,4 +1,3 @@
-// js/intro.js
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { gsap } from "gsap";
@@ -29,11 +28,8 @@ controls.enableZoom = false;
 const starCount = 20000;
 const starGeometry = new THREE.BufferGeometry();
 const positions = new Float32Array(starCount * 3);
-
-for (let i = 0; i < positions.length; i++) {
+for (let i = 0; i < positions.length; i++)
   positions[i] = (Math.random() - 0.5) * 6000;
-}
-
 starGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
 const starTexture = new THREE.TextureLoader().load(
@@ -48,7 +44,6 @@ const starMaterial = new THREE.PointsMaterial({
   depthWrite: false,
   opacity: 0.9,
 });
-
 const stars = new THREE.Points(starGeometry, starMaterial);
 scene.add(stars);
 
@@ -63,16 +58,6 @@ function animate() {
 }
 animate();
 
-// 🧩 Keep Three.js responsive on resize
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  ScrollTrigger.refresh();
-}
-
-window.addEventListener("resize", onWindowResize);
-
 // 🎬 Scroll zoom animation (only camera zoom now, no overlay)
 gsap.to(camera.position, {
   z: 300,
@@ -82,7 +67,7 @@ gsap.to(camera.position, {
     start: "top top",
     end: "bottom bottom",
     scrub: 2
-  }
+  },
 });
 
 // 🌍 Globe section (we only reveal it based on scroll)
@@ -103,7 +88,7 @@ ScrollTrigger.create({
       duration: 1.2,
       ease: "power2.out",
       onComplete: () => {
-        canvas.style.display = "none"; // remove it so globe is fully interactive
+        canvas.style.display = "none";   // remove it so globe is fully interactive
       }
     });
   }
