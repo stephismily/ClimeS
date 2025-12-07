@@ -9,7 +9,7 @@ let db;
 export async function connectDB() {
   try {
     await client.connect();
-    db = client.db("weather_project");
+    db = client.db("weather_project"); // you can change the DB name
     console.log("✅ MongoDB connected successfully");
     return db;
   } catch (error) {
