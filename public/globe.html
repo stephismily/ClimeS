@@ -5,18 +5,20 @@
     <title>Weather</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <!-- CDN LIBRARIES -->
+    <!-- MAPBOX + GSAP -->
     <link
       href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css"
       rel="stylesheet"
     />
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Your global app stuff (if any) -->
     <link rel="stylesheet" href="css/app.css" />
     <script src="js/app.js"></script>
     <link rel="icon" type="image/png" href="images/icon.png" />
 
-    <!-- EXTERNAL CSS -->
+    <!-- Globe-specific CSS -->
     <link rel="stylesheet" href="css/globe.css" />
   </head>
 
@@ -24,6 +26,19 @@
     <div class="app" id="app">
       <div id="map"></div>
 
+      <!-- 🔍 Floating search bar (top-left) -->
+      <div class="search-container" id="searchContainer">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="text"
+          placeholder="Search places..."
+          autocomplete="off"
+        />
+        <div id="searchResults" class="search-results"></div>
+      </div>
+
+      <!-- Weather card -->
       <div class="card" id="weatherCard">
         <iframe id="weatherAnim" class="weather-bg"></iframe>
 
@@ -58,7 +73,7 @@
       }
     </script>
 
-    <!-- EXTERNAL JS -->
+    <!-- Globe-specific JS -->
     <script src="js/globe.js"></script>
   </body>
 </html>
