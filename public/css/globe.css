@@ -32,6 +32,7 @@ body {
   height: 100%;
 }
 
+/* 🌍 Weather Card */
 .card {
   position: absolute;
   width: var(--card-width);
@@ -164,7 +165,102 @@ body {
   color: #333;
 }
 
-/* When globe is embedded inside the intro iframe, hide its own header */
+/* Hide header when embedded inside intro iframe */
 body.embedded header {
   display: none;
+}
+
+/* 🔍 Search UI (floating, top-left) */
+.search-container {
+  position: absolute;
+  top: 88px;                /* below the 70px header */
+  left: 18px;
+  z-index: 150;             /* higher than header (100) */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(320px, 60vw);
+  font-family: inherit;
+}
+
+/* When globe is embedded inside intro iframe, header is hidden,
+   so we pull the search back up a bit */
+body.embedded .search-container {
+  top: 18px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  outline: none;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 🔍 Results dropdown (Glass style) */
+.search-results {
+  max-height: 260px;
+  overflow-y: auto;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);  /* transparent glass */
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: none;
+  animation: fadeIn 0.22s ease-out;
+}
+
+.search-results.visible {
+  display: block;
+}
+
+/* Each result row */
+.search-item {
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  color: #e2e8f0;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.2s ease;
+}
+
+/* No border on last item */
+.search-item:last-child {
+  border-bottom: none;
+}
+
+/* Hover */
+.search-item:hover {
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* "No results" style */
+.search-item.empty {
+  text-align: center;
+  color: #cbd5e1;
+  cursor: default;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
 }
