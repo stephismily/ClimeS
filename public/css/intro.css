@@ -9,6 +9,7 @@ body {
   color: #fff; /* default page text white */
 }
 
+/* 3D intro canvas */
 #canvas {
   position: fixed;
   top: 0;
@@ -34,7 +35,7 @@ body {
   pointer-events: none;
 
   /* subtle transparent glass (very light tint, mostly transparent) */
-  background: rgba(255, 255, 255, 0.03); /* almost transparent */
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
@@ -76,26 +77,6 @@ body {
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
 }
 
-/* adapt for smaller screens */
-@media (max-width: 880px) {
-  .welcome-container {
-    width: calc(100% - 36px);
-    left: 50%;
-    transform: translateX(-50%);
-    top: 12%;
-    padding: 20px;
-    border-radius: 12px;
-  }
-
-  .welcome-title {
-    font-size: 2.3em;
-  }
-
-  .welcome-text {
-    font-size: 1em;
-  }
-}
-
 /* SCROLL AREA */
 .scroll-area {
   position: relative;
@@ -128,7 +109,7 @@ body {
   border: none;
 }
 
-/* HEADER (unchanged) */
+/* HEADER */
 header {
   position: fixed;
   top: 0;
@@ -173,6 +154,11 @@ header {
   text-shadow: 0 0 10px #2b88c6;
 }
 
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
 .auth-buttons button {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -188,4 +174,233 @@ header {
   background: #2b88c6;
   color: #fff;
   box-shadow: 0 0 12px rgba(43, 136, 198, 0.6);
+}
+
+/* ✅ RESPONSIVE DESIGN */
+
+/* Desktop - 1024px and below */
+@media (max-width: 1024px) {
+  .welcome-container {
+    width: calc(100% - 36px);
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10%;
+    padding: 24px 28px;
+    border-radius: 12px;
+  }
+
+  .welcome-title {
+    font-size: 2.5em;
+    margin-bottom: 8px;
+  }
+
+  .welcome-text {
+    font-size: 1em;
+  }
+
+  header {
+    padding: 0 30px;
+  }
+
+  .nav-links {
+    gap: 24px;
+  }
+
+  .nav-links a {
+    font-size: 0.95em;
+  }
+
+  .auth-buttons button {
+    padding: 7px 14px;
+    font-size: 0.9em;
+  }
+}
+
+/* ✅ TABLETS - 768px and below */
+@media (max-width: 768px) {
+  header {
+    padding: 0 20px;
+    height: 60px;
+  }
+
+  .logo {
+    font-size: 1.3em;
+  }
+
+  .nav-links {
+    gap: 16px;
+  }
+
+  .nav-links a {
+    font-size: 0.85em;
+  }
+
+  .auth-buttons button {
+    padding: 6px 12px;
+    font-size: 0.8em;
+    border-radius: 18px;
+  }
+
+  .welcome-container {
+    width: calc(100% - 24px);
+    padding: 20px;
+    top: 8%;
+    margin: 0 12px;
+  }
+
+  .welcome-title {
+    font-size: 2em;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .welcome-text {
+    font-size: 0.95em;
+    line-height: 1.5em;
+    margin-top: 10px;
+  }
+}
+
+/* ✅ LARGE PHONES - 480px to 767px */
+@media (max-width: 767px) {
+  header {
+    padding: 0 16px;
+    height: 56px;
+  }
+
+  .logo {
+    font-size: 1.1em;
+  }
+
+  .nav-links {
+    gap: 12px;
+  }
+
+  .nav-links a {
+    font-size: 0.75em;
+  }
+
+  .auth-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .auth-buttons button {
+    padding: 5px 10px;
+    font-size: 0.7em;
+  }
+
+  .welcome-container {
+    width: calc(100% - 20px);
+    padding: 16px;
+    top: 5%;
+    margin: 0 10px;
+    border-radius: 10px;
+  }
+
+  .welcome-title {
+    font-size: 1.6em;
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+
+  .welcome-text {
+    font-size: 0.85em;
+    line-height: 1.4em;
+    margin-top: 8px;
+    text-align: left;
+  }
+
+  .scroll-area {
+    height: 500vh;
+  }
+}
+
+/* ✅ SMALL PHONES - under 480px */
+@media (max-width: 479px) {
+  header {
+    padding: 0 12px;
+    height: 52px;
+  }
+
+  .logo {
+    font-size: 1em;
+    letter-spacing: 0px;
+  }
+
+  .nav-links {
+    gap: 8px;
+  }
+
+  .nav-links a {
+    font-size: 0.65em;
+  }
+
+  .auth-buttons button {
+    padding: 4px 8px;
+    font-size: 0.65em;
+    border-radius: 16px;
+  }
+
+  .welcome-container {
+    width: calc(100% - 16px);
+    padding: 14px;
+    top: 3%;
+    margin: 0 8px;
+    border-radius: 8px;
+    min-width: 280px;
+  }
+
+  .welcome-title {
+    font-size: 1.4em;
+    margin-bottom: 4px;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  .user-name {
+    display: block;
+  }
+
+  .welcome-text {
+    font-size: 0.75em;
+    line-height: 1.3em;
+    margin-top: 6px;
+    text-align: left;
+    opacity: 0.95;
+  }
+
+  .scroll-area {
+    height: 300vh;
+  }
+
+  .globe-section {
+    height: 100vh;
+  }
+}
+
+/* ✅ LANDSCAPE MODE - adjust for reduced height */
+@media (max-height: 600px) and (orientation: landscape) {
+  header {
+    height: 50px;
+  }
+
+  .welcome-container {
+    top: 2%;
+    padding: 12px;
+  }
+
+  .welcome-title {
+    font-size: 1.5em;
+    margin-bottom: 4px;
+  }
+
+  .welcome-text {
+    font-size: 0.8em;
+    margin-top: 4px;
+  }
+
+  .scroll-area {
+    height: 400vh;
+  }
 }
