@@ -7,25 +7,30 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   const msg = document.getElementById("message");
 
   msg.textContent = "Creating account...";
-  msg.style.color = "#2b88c6";
+  msg.style.color = "#2aa8ff";
 
-  const response = await fetch("https://climes.onrender.com/auth/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
-  });
+  try {
+    const response = await fetch("https://climes.onrender.com/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (data.success) {
-    msg.style.color = "#4caf50";
-    msg.textContent = "Signup successful! Redirecting...";
-
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
-  } else {
+    if (data.success) {
+      msg.style.color = "#4caf50";
+      msg.textContent = "Signup successful! Redirecting...";
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1200);
+    } else {
+      msg.style.color = "#ff4444";
+      msg.textContent = data.message || "Signup failed.";
+    }
+  } catch (err) {
     msg.style.color = "#ff4444";
-    msg.textContent = data.message;
+    msg.textContent = "Server error. Try again.";
+    console.error(err);
   }
 });
