@@ -14,6 +14,9 @@ function generateToken(user) {
   );
 }
 
+// ------------------------------
+// SIGNUP
+// ------------------------------
 router.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -22,12 +25,12 @@ router.post("/signup", async (req, res) => {
 
   try {
     const existing = await User.findByEmail(email);
+
     if (existing) {
       return res.json({ success: false, message: "Email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("hashedPassword (debug):", hashedPassword);
 
     const result = await User.create({
       name,
@@ -47,6 +50,9 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// ------------------------------
+// LOGIN
+// ------------------------------
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -60,7 +66,7 @@ router.post("/login", async (req, res) => {
       return res.json({ success: false, message: "User not found" });
     }
 
-    // Compare entered password with hashed password
+    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -69,6 +75,7 @@ router.post("/login", async (req, res) => {
 
     const token = generateToken(user);
 
+    // Final response
     return res.json({
       success: true,
       message: "Login successful",
@@ -85,7 +92,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// For testing
+// ------------------------------
+// GET ALL USERS (TESTING)
+// ------------------------------
 router.get("/users", async (req, res) => {
   const users = await User.getAll();
   res.json(users);

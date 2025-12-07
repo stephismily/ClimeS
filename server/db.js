@@ -23,3 +23,5 @@ export function getDB() {
   }
   return db;
 }
+
+export default connectDB;

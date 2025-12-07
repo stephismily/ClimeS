@@ -40,6 +40,7 @@ canvas#bg {
   font-size: 1.3em;
   color: #ddd;
   line-height: 1.8em;
+  text-align: justify;
 }
 
 .team {
