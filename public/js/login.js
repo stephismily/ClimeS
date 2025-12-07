@@ -23,8 +23,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       msg.textContent = "Login successful! Redirecting...";
 
       // --- STORE LOGIN STATE ---
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token); // ✔ app.js looks for this
+      localStorage.setItem("user", JSON.stringify(data.user)); // ✔ includes name
 
       // --- REDIRECT ---
       setTimeout(() => {
