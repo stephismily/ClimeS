@@ -25,8 +25,15 @@ const animFrame = document.getElementById("weatherAnim");
 const dayLabel = document.getElementById("dayLabel");
 const infoContent = document.getElementById("infoContent");
 
+/* 🔍 Search elements */
+const searchInput = document.getElementById("searchInput");
+const searchResults = document.getElementById("searchResults");
+const searchContainer = document.getElementById("searchContainer");
+
 let currentOffset = 0;
 let weatherData = null;
+let searchTimeout = null;
+let currentSearchFeatures = [];
 
 /* Reapply temp after iframe loads */
 animFrame.onload = () => {
@@ -81,7 +88,7 @@ async function fetchWeather(lat, lon) {
   return res.json();
 }
 
-/* 🔎 LOCATION NAME (Mapbox Geocoding) */
+/* LOCATION NAME (Mapbox Geocoding) */
 async function getLocationName(lat, lon) {
   try {
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?limit=1&access_token=${MAPBOX_TOKEN}`;
@@ -90,11 +97,9 @@ async function getLocationName(lat, lon) {
 
     const feature = data.features && data.features[0];
     if (!feature) {
-      // fallback: just show coordinates as title
       return `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
     }
 
-    // nice clean name like "Colombo, Sri Lanka"
     return feature.place_name || `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
   } catch (e) {
     console.error("Reverse geocode failed:", e);
@@ -289,29 +294,10 @@ map.on("mouseup", () => {
   dragStartPoint = null;
 });
 
-/* MAP CLICK */
-map.on("click", async (e) => {
-  // ignore if user was dragging
-  if (dragMoved) {
-    dragMoved = false;
-    return;
-  }
-
-  // ignore clicks outside the globe circle
-  if (!isPointOnGlobe(e.point)) {
-    return;
-  }
-
-  const { lat, lng } = e.lngLat;
-
-  // If card is already visible and not in split mode, do nothing
-  if (card.classList.contains("visible") && !app.classList.contains("split")) {
-    return;
-  }
-
+/* Core: open weather card for given lat/lon */
+async function showWeatherFor(lat, lng, nameHint = null) {
   card.classList.add("visible");
 
-  // Centered view: lock globe behind card, split view: keep interactive
   if (app.classList.contains("split")) {
     unlockGlobe();
   } else {
@@ -327,9 +313,9 @@ map.on("click", async (e) => {
       "--";
 
   try {
-    const [data, locationName] = await Promise.all([
+    const [data, resolvedName] = await Promise.all([
       fetchWeather(lat, lng),
-      getLocationName(lat, lng),
+      nameHint ? Promise.resolve(nameHint) : getLocationName(lat, lng),
     ]);
 
     weatherData = data;
@@ -337,18 +323,39 @@ map.on("click", async (e) => {
 
     updateCard(0);
 
-    // ✅ title = name (from Mapbox), sub = lat/lon
-    cardTitle.textContent = locationName;
+    cardTitle.textContent = resolvedName;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
   } catch (err) {
     console.error(err);
-    // fallback: still show coords, but no "Unknown location"
-    cardTitle.textContent = `Lat ${lat.toFixed(2)}, Lon ${lng.toFixed(2)}`;
+    const fallback = nameHint || `Lat ${lat.toFixed(2)}, Lon ${lng.toFixed(2)}`;
+    cardTitle.textContent = fallback;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
   }
+}
+
+/* MAP CLICK */
+map.on("click", async (e) => {
+  // ignore if user was dragging
+  if (dragMoved) {
+    dragMoved = false;
+    return;
+  }
+
+  // ignore clicks outside the globe circle
+  if (!isPointOnGlobe(e.point)) {
+    return;
+  }
+
+  const { lat, lng } = e.lngLat;
+
+  if (card.classList.contains("visible") && !app.classList.contains("split")) {
+    return;
+  }
+
+  showWeatherFor(lat, lng);
 });
 
-/* SCROLL DAYS */
+/* SCROLL DAYS (inside card) */
 card.addEventListener("wheel", (e) => {
   if (!weatherData) return;
 
@@ -358,5 +365,112 @@ card.addEventListener("wheel", (e) => {
   } else if (e.deltaY > 0 && currentOffset < 1) {
     currentOffset++;
     updateCard(currentOffset, 1);
+  }
+});
+
+/* 🔍 SEARCH LOGIC */
+
+/* stop clicks in search UI from hitting the map */
+searchContainer.addEventListener("mousedown", (e) => e.stopPropagation());
+searchContainer.addEventListener("click", (e) => e.stopPropagation());
+
+function clearSearchResults() {
+  searchResults.innerHTML = "";
+  searchResults.classList.remove("visible");
+  currentSearchFeatures = [];
+}
+
+async function performSearch(query) {
+  if (!query.trim()) {
+    clearSearchResults();
+    return;
+  }
+
+  try {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+      query
+    )}.json?autocomplete=true&limit=5&access_token=${MAPBOX_TOKEN}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const features = data.features || [];
+    currentSearchFeatures = features;
+
+    if (!features.length) {
+      searchResults.innerHTML =
+        '<div class="search-item empty">No results</div>';
+      searchResults.classList.add("visible");
+      return;
+    }
+
+    searchResults.innerHTML = features
+      .map(
+        (f, idx) =>
+          `<div class="search-item" data-idx="${idx}">${f.place_name}</div>`
+      )
+      .join("");
+    searchResults.classList.add("visible");
+  } catch (err) {
+    console.error("Search failed:", err);
+  }
+}
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value;
+  clearTimeout(searchTimeout);
+  if (!q.trim()) {
+    clearSearchResults();
+    return;
+  }
+  searchTimeout = setTimeout(() => performSearch(q), 300);
+});
+
+/* click on a suggestion */
+searchResults.addEventListener("click", (e) => {
+  const item = e.target.closest(".search-item");
+  if (!item || item.classList.contains("empty")) return;
+
+  const idx = Number(item.dataset.idx);
+  const feature = currentSearchFeatures[idx];
+  if (!feature) return;
+
+  const [lng, lat] = feature.center;
+  const name = feature.place_name;
+
+  clearSearchResults();
+  searchInput.blur();
+
+  map.flyTo({
+    center: [lng, lat],
+    zoom: 5,
+    essential: true,
+  });
+
+  showWeatherFor(lat, lng, name);
+});
+
+/* Enter key: choose first result if available */
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (currentSearchFeatures.length > 0) {
+      const feature = currentSearchFeatures[0];
+      const [lng, lat] = feature.center;
+      const name = feature.place_name;
+      clearSearchResults();
+      searchInput.blur();
+      map.flyTo({
+        center: [lng, lat],
+        zoom: 5,
+        essential: true,
+      });
+      showWeatherFor(lat, lng, name);
+    }
+  }
+});
+
+/* click anywhere else closes dropdown */
+document.addEventListener("click", (e) => {
+  if (!searchContainer.contains(e.target)) {
+    clearSearchResults();
   }
 });
