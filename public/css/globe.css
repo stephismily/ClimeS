@@ -1,9 +1,11 @@
 :root {
-  --card-width: 460px;
-  --card-height: 600px;
+  /* 🔽 smaller card */
+  --card-width: 400px;
+  --card-height: 520px;
   --transition-duration: 500ms;
   --accent: #2b88c6;
 }
+
 
 html,
 body {
@@ -39,10 +41,8 @@ body {
   width: var(--card-width);
   height: var(--card-height);
   left: 50%;
-
-  /* ⬇️ shift card down a bit to sit below 70px header */
-  top: calc(50% + 35px);
-
+  top: 50%;
+  height: 70%
   transform: translate(-50%, -50%) scale(0.95);
   border-radius: 24px;
   overflow: hidden;
@@ -52,15 +52,6 @@ body {
   pointer-events: none;
   z-index: 20;
   backdrop-filter: blur(6px);
-
-  /* make sure card never exceeds viewport height */
-  max-height: calc(100vh - 110px); /* 70px header + ~40px breathing space */
-}
-
-/* ✅ When embedded inside index.html iframe (no header inside iframe),
-   we keep the original perfect vertical center */
-body.embedded .card {
-  top: 50%;
 }
 
 .card.visible {
@@ -69,21 +60,15 @@ body.embedded .card {
   pointer-events: auto;
 }
 
-/* Split view: card becomes side panel below the header */
 .app.split .card {
   position: relative;
   left: auto;
-
-  /* start right under the 70px header */
   top: 70px;
-
   transform: none;
   opacity: 1;
   pointer-events: auto;
   width: 100%;
-
-  /* full height minus navbar */
-  height: calc(100vh - 70px);
+  height: 88%;
   border-radius: 0;
   box-shadow: none;
 }
@@ -184,17 +169,16 @@ body.embedded .card {
   color: #333;
 }
 
-/* Hide header when embedded inside intro iframe (if there's any header in globe.html) */
+/* Hide header when embedded inside intro iframe */
 body.embedded header {
   display: none;
 }
 
 /* 🔍 Search UI (floating, top-left) */
-/* 🔍 Search UI (floating, top-left) */
-/* 🔍 Search UI (floating, top-left) */
 .search-container {
   position: absolute;
-  top: 120px;              /* ⬅️ move down below navbar */
+  /* leave space for navbar */
+  top: 110px;
   left: 18px;
   z-index: 150;
   display: flex;
@@ -204,12 +188,11 @@ body.embedded header {
   font-family: inherit;
 }
 
-/* When globe is embedded inside intro iframe, we STILL want it below navbar,
-   so use the SAME top value (or even a bit more if you like). */
+/* When globe is embedded inside intro iframe, header is hidden,
+   so we pull the search back up a bit */
 body.embedded .search-container {
-  top: 100px;              /* ⬅️ IMPORTANT: was 18px before */
+  top: 24px;
 }
-
 
 .search-input {
   width: 100%;
@@ -256,22 +239,26 @@ body.embedded .search-container {
   transition: all 0.2s ease;
 }
 
+/* No border on last item */
 .search-item:last-child {
   border-bottom: none;
 }
 
+/* Hover */
 .search-item:hover {
   background: rgba(255, 255, 255, 0.13);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
+/* "No results" style */
 .search-item.empty {
   text-align: center;
   color: #cbd5e1;
   cursor: default;
 }
 
+/* Fade animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -281,4 +268,28 @@ body.embedded .search-container {
     opacity: 1;
     translate: 0 0;
   }
+}
+
+/* 🧭 NEW: scroll hint for days */
+.scroll-day-hint {
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: #374151;
+  opacity: 0.85;
+  padding: 6px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.35);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.scroll-day-hint.hidden {
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
 }
