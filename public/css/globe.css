@@ -11,7 +11,8 @@ body {
   height: 100%;
   background: #000;
   font-family: "Poppins", sans-serif;
-  overflow: hidden;
+  /* 🔒 Prevent page from scrolling – globe is full-screen */
+  overflow: hidden !important;
 }
 
 .app {
@@ -38,7 +39,10 @@ body {
   width: var(--card-width);
   height: var(--card-height);
   left: 50%;
-  top: 50%;
+
+  /* ⬇️ shift card down a bit to sit below 70px header */
+  top: calc(50% + 35px);
+
   transform: translate(-50%, -50%) scale(0.95);
   border-radius: 24px;
   overflow: hidden;
@@ -48,6 +52,15 @@ body {
   pointer-events: none;
   z-index: 20;
   backdrop-filter: blur(6px);
+
+  /* make sure card never exceeds viewport height */
+  max-height: calc(100vh - 110px); /* 70px header + ~40px breathing space */
+}
+
+/* ✅ When embedded inside index.html iframe (no header inside iframe),
+   we keep the original perfect vertical center */
+body.embedded .card {
+  top: 50%;
 }
 
 .card.visible {
@@ -56,15 +69,21 @@ body {
   pointer-events: auto;
 }
 
+/* Split view: card becomes side panel below the header */
 .app.split .card {
   position: relative;
   left: auto;
+
+  /* start right under the 70px header */
   top: 70px;
+
   transform: none;
   opacity: 1;
   pointer-events: auto;
   width: 100%;
-  height: 92%;
+
+  /* full height minus navbar */
+  height: calc(100vh - 70px);
   border-radius: 0;
   box-shadow: none;
 }
@@ -165,17 +184,19 @@ body {
   color: #333;
 }
 
-/* Hide header when embedded inside intro iframe */
+/* Hide header when embedded inside intro iframe (if there's any header in globe.html) */
 body.embedded header {
   display: none;
 }
 
 /* 🔍 Search UI (floating, top-left) */
+/* 🔍 Search UI (floating, top-left) */
+/* 🔍 Search UI (floating, top-left) */
 .search-container {
   position: absolute;
-  top: 88px; /* below the 70px header */
+  top: 120px;              /* ⬅️ move down below navbar */
   left: 18px;
-  z-index: 150; /* higher than header (100) */
+  z-index: 150;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -183,11 +204,12 @@ body.embedded header {
   font-family: inherit;
 }
 
-/* When globe is embedded inside intro iframe, header is hidden,
-   so we pull the search back up a bit */
+/* When globe is embedded inside intro iframe, we STILL want it below navbar,
+   so use the SAME top value (or even a bit more if you like). */
 body.embedded .search-container {
-  top: 18px;
+  top: 100px;              /* ⬅️ IMPORTANT: was 18px before */
 }
+
 
 .search-input {
   width: 100%;
@@ -211,7 +233,7 @@ body.embedded .search-container {
   max-height: 260px;
   overflow-y: auto;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06); /* transparent glass */
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
@@ -234,26 +256,22 @@ body.embedded .search-container {
   transition: all 0.2s ease;
 }
 
-/* No border on last item */
 .search-item:last-child {
   border-bottom: none;
 }
 
-/* Hover */
 .search-item:hover {
   background: rgba(255, 255, 255, 0.13);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
-/* "No results" style */
 .search-item.empty {
   text-align: center;
   color: #cbd5e1;
   cursor: default;
 }
 
-/* Fade animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

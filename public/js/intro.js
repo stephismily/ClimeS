@@ -28,8 +28,9 @@ controls.enableZoom = false;
 const starCount = 20000;
 const starGeometry = new THREE.BufferGeometry();
 const positions = new Float32Array(starCount * 3);
-for (let i = 0; i < positions.length; i++)
+for (let i = 0; i < positions.length; i++) {
   positions[i] = (Math.random() - 0.5) * 6000;
+}
 starGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
 const starTexture = new THREE.TextureLoader().load(
@@ -58,38 +59,78 @@ function animate() {
 }
 animate();
 
-// 🎬 Scroll zoom animation (only camera zoom now, no overlay)
-gsap.to(camera.position, {
+// 🔗 DOM elements
+const globeSection = document.getElementById("globeSection");
+const scrollArea = document.querySelector(".scroll-area");
+const welcomeContainer = document.getElementById("welcomeContainer");
+
+// 🎬 Scroll zoom animation (camera only)
+const zoomTween = gsap.to(camera.position, {
   z: 300,
   ease: "power2.inOut",
   scrollTrigger: {
     trigger: ".scroll-area",
     start: "top top",
     end: "bottom bottom",
-    scrub: 2
+    scrub: 2,
   },
 });
 
-// 🌍 Globe section (we only reveal it based on scroll)
-const globeSection = document.getElementById("globeSection");
-
-// When user scrolls to the end of the scroll-area, smoothly cross-fade to globe
+// ✅ When user reaches bottom of intro, reveal globe & freeze scroll
 ScrollTrigger.create({
   trigger: ".scroll-area",
   start: "bottom bottom",
   once: true,
   onEnter: () => {
-    // 1) fade IN globe (uses CSS transition + visible class)
+    // 1) Fade-in globe iframe
     globeSection.classList.add("visible");
 
-    // 2) cross-fade OUT the 3D intro canvas
+    // 2) Fade out welcome glass box (if present)
+    if (welcomeContainer) {
+      gsap.to(welcomeContainer, {
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        onComplete: () => {
+          welcomeContainer.style.display = "none";
+        },
+      });
+    }
+
+    // 3) Cross-fade OUT the 3D intro canvas
     gsap.to(canvas, {
       opacity: 0,
       duration: 1.2,
       ease: "power2.out",
       onComplete: () => {
-        canvas.style.display = "none";   // remove it so globe is fully interactive
-      }
+        canvas.style.display = "none";
+      },
     });
-  }
+
+    // 4) Stop all ScrollTriggers for the intro (no more camera zoom / scroll effects)
+    const allTriggers = ScrollTrigger.getAll();
+    allTriggers.forEach((t) => {
+      // don't kill the one we just created, but disabling is fine
+      t.disable(false);
+    });
+
+    // 5) Hard lock page scroll so user can't move up/down anymore
+    setTimeout(() => {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+
+      // optional: zero out scroll inertia
+      window.scrollTo({
+        top: window.scrollY,
+        left: 0,
+        behavior: "instant" in window ? "instant" : "auto",
+      });
+    }, 900); // after fade mostly done
+  },
+});
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });

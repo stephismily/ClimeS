@@ -30,6 +30,20 @@ const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
 const searchContainer = document.getElementById("searchContainer");
 
+/* 👋 Optional intro message (if somehow exists on this page) */
+const introHero = document.getElementById("introHero");
+
+// ✅ HARD KILL intro box on globe page (just in case it leaks here)
+if (introHero) {
+  introHero.style.opacity = "0";
+  introHero.style.pointerEvents = "none";
+  introHero.style.display = "none";
+}
+
+/* ✅ Extra: JS-level scroll lock for this page */
+document.documentElement.style.overflow = "hidden";
+document.body.style.overflow = "hidden";
+
 let currentOffset = 0;
 let weatherData = null;
 let searchTimeout = null;
@@ -55,7 +69,7 @@ function unlockGlobe() {
   map.touchZoomRotate.enable();
 }
 
-// start with globe interactive
+// start interactive
 unlockGlobe();
 
 /* UI BUTTONS */
@@ -67,40 +81,76 @@ closeBtn.onclick = () => {
 
 splitBtn.onclick = () => {
   app.classList.toggle("split");
-
-  // In split view, always allow rotation
   if (app.classList.contains("split")) {
     unlockGlobe();
   } else {
-    // Center view: if card is open, lock globe behind it
-    if (card.classList.contains("visible")) {
-      lockGlobe();
-    } else {
-      unlockGlobe();
-    }
+    if (card.classList.contains("visible")) lockGlobe();
+    else unlockGlobe();
   }
 };
 
-/* FETCH WEATHER (Open-Meteo) */
+/* WEATHER API */
 async function fetchWeather(lat, lon) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weathercode&past_days=1&forecast_days=2&timezone=auto`;
   const res = await fetch(url);
   return res.json();
 }
 
-/* LOCATION NAME (Mapbox Geocoding) */
+/* 🔠 Helper: mapbox feature -> "City, Country" */
+function formatFeatureName(feature) {
+  if (!feature) return "";
+
+  let place = null;
+  let country = null;
+
+  // If the feature itself is a place, use it
+  if (feature.place_type && feature.place_type.includes("place")) {
+    place = feature.text;
+  }
+
+  // Look into context for place / country
+  if (Array.isArray(feature.context)) {
+    for (const c of feature.context) {
+      if (!place && c.id && c.id.startsWith("place.")) {
+        place = c.text;
+      }
+      if (c.id && c.id.startsWith("country.")) {
+        country = c.text;
+      }
+    }
+  }
+
+  const placeName = feature.place_name || feature.text || "";
+
+  // Fallbacks
+  if (!place && placeName) {
+    place = placeName.split(",")[0].trim();
+  }
+  if (!country && placeName) {
+    const parts = placeName.split(",");
+    country = parts[parts.length - 1].trim();
+  }
+
+  // Clean/extract short version of place if it has hyphen etc.
+  if (place && place.includes("-")) {
+    // "Kodai - Pallangi Road" → "Kodai"
+    place = place.split("-")[0].trim();
+  }
+
+  if (place && country) return `${place}, ${country}`;
+  return place || country || placeName;
+}
+
+/* GEOCODING NAME (for clicks) */
 async function getLocationName(lat, lon) {
   try {
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?limit=1&access_token=${MAPBOX_TOKEN}`;
     const res = await fetch(url);
     const data = await res.json();
-
     const feature = data.features && data.features[0];
-    if (!feature) {
-      return `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
-    }
-
-    return feature.place_name || `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
+    if (!feature) return `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
+    const niceName = formatFeatureName(feature);
+    return niceName || `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
   } catch (e) {
     console.error("Reverse geocode failed:", e);
     return `Lat ${lat.toFixed(2)}, Lon ${lon.toFixed(2)}`;
@@ -135,7 +185,6 @@ function codeToText(code) {
   return map[code] || "Unknown";
 }
 
-/* WEATHER CODE → CATEGORY */
 function codeToCategory(code) {
   if ([3].includes(code)) return "foggy";
   if ([45, 48].includes(code)) return "foggy";
@@ -147,13 +196,10 @@ function codeToCategory(code) {
   return "sunny";
 }
 
-/* CATEGORY FROM SUMMARY */
 function categoryFromSummary(summary) {
   if (!summary) return "sunny";
-
   const temp = Number(summary.t);
   const code = Number(summary.code);
-
   if (!isNaN(temp) && temp < 5) return "snowy";
   return codeToCategory(code);
 }
@@ -165,7 +211,6 @@ function summarizeDay(data, offset) {
 
   const times = h.time.map((t) => new Date(t));
   const now = new Date();
-
   const tgt = new Date(now);
   tgt.setDate(now.getDate() + offset);
   const tgtDate = tgt.toISOString().split("T")[0];
@@ -177,7 +222,6 @@ function summarizeDay(data, offset) {
   if (!idx.length) return null;
 
   const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-
   const t = avg(idx.map((i) => h.temperature_2m[i]));
   const hum = avg(idx.map((i) => h.relative_humidity_2m[i]));
   const wind = avg(idx.map((i) => h.wind_speed_10m[i]));
@@ -201,10 +245,9 @@ function summarizeDay(data, offset) {
   };
 }
 
-/* IFRAME SWAP */
+/* IFRAME & CARD UPDATE */
 function smoothSwapIframe(newSrc) {
   if (!animFrame.style.opacity) animFrame.style.opacity = "1";
-
   gsap.to(animFrame, {
     opacity: 0,
     duration: 0.35,
@@ -216,10 +259,8 @@ function smoothSwapIframe(newSrc) {
   });
 }
 
-/* UPDATE CARD */
 function updateCard(offset, direction = 1) {
   if (!weatherData) return;
-
   const d = summarizeDay(weatherData, offset);
   if (!d) return;
 
@@ -236,7 +277,6 @@ function updateCard(offset, direction = 1) {
       mWind.textContent = `${d.wind} m/s`;
       mHum.textContent = `${d.hum} %`;
       mCond.textContent = d.cond;
-
       dayLabel.textContent =
         offset === -1 ? "Yesterday" : offset === 0 ? "Today" : "Tomorrow";
     },
@@ -248,7 +288,6 @@ function updateCard(offset, direction = 1) {
 
   const category = categoryFromSummary(d);
   const targetSrc = `weather_cards/${category}.html`;
-
   if (!animFrame.src || !animFrame.src.endsWith(targetSrc)) {
     smoothSwapIframe(targetSrc);
   }
@@ -259,7 +298,7 @@ function updateCard(offset, direction = 1) {
   );
 }
 
-/* Helper: is click point inside the visible globe circle */
+/* Click inside globe circle only */
 function isPointOnGlobe(point) {
   const rect = map.getContainer().getBoundingClientRect();
   const cx = rect.width / 2;
@@ -270,7 +309,7 @@ function isPointOnGlobe(point) {
   return dx * dx + dy * dy <= r * r;
 }
 
-/* 🛡️ Prevent card on drag vs real click */
+/* Drag detection */
 let dragStartPoint = null;
 let dragMoved = false;
 
@@ -283,94 +322,95 @@ map.on("mousemove", (e) => {
   if (!dragStartPoint) return;
   const dx = e.point.x - dragStartPoint.x;
   const dy = e.point.y - dragStartPoint.y;
-  const distSq = dx * dx + dy * dy;
-  if (distSq > 9) {
-    // threshold ~3px
-    dragMoved = true;
-  }
+  if (dx * dx + dy * dy > 9) dragMoved = true;
 });
 
 map.on("mouseup", () => {
   dragStartPoint = null;
 });
 
-/* Core: open weather card for given lat/lon */
+/* Core: open weather card */
 async function showWeatherFor(lat, lng, nameHint = null) {
   card.classList.add("visible");
-
-  if (app.classList.contains("split")) {
-    unlockGlobe();
-  } else {
-    lockGlobe();
-  }
+  if (app.classList.contains("split")) unlockGlobe();
+  else lockGlobe();
 
   cardTitle.textContent = "Loading...";
   cardCoords.textContent = "";
-  mTemp.textContent =
-    mWind.textContent =
-    mHum.textContent =
-    mCond.textContent =
-      "--";
+  mTemp.textContent = mWind.textContent = mHum.textContent = mCond.textContent =
+    "--";
 
   try {
-    const [data, resolvedName] = await Promise.all([
+    const [data, resolvedNameRaw] = await Promise.all([
       fetchWeather(lat, lng),
       nameHint ? Promise.resolve(nameHint) : getLocationName(lat, lng),
     ]);
 
     weatherData = data;
     currentOffset = 0;
-
     updateCard(0);
 
+    const resolvedName =
+      resolvedNameRaw || `Lat ${lat.toFixed(2)}, Lon ${lng.toFixed(2)}`;
     cardTitle.textContent = resolvedName;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
   } catch (err) {
     console.error(err);
-    const fallback = nameHint || `Lat ${lat.toFixed(2)}, Lon ${lng.toFixed(2)}`;
+    const fallback =
+      nameHint || `Lat ${lat.toFixed(2)}, Lon ${lng.toFixed(2)}`;
     cardTitle.textContent = fallback;
     cardCoords.textContent = `Lat: ${lat.toFixed(2)}, Lon: ${lng.toFixed(2)}`;
   }
 }
 
-/* MAP CLICK */
-map.on("click", async (e) => {
-  // ignore if user was dragging
+/* MAP CLICK -> weather */
+map.on("click", (e) => {
   if (dragMoved) {
     dragMoved = false;
     return;
   }
-
-  // ignore clicks outside the globe circle
-  if (!isPointOnGlobe(e.point)) {
-    return;
-  }
+  if (!isPointOnGlobe(e.point)) return;
 
   const { lat, lng } = e.lngLat;
-
-  if (card.classList.contains("visible") && !app.classList.contains("split")) {
+  if (card.classList.contains("visible") && !app.classList.contains("split"))
     return;
-  }
-
   showWeatherFor(lat, lng);
 });
 
-/* SCROLL DAYS (inside card) */
-card.addEventListener("wheel", (e) => {
-  if (!weatherData) return;
+/* Scroll change day – and STOP page scroll while over card */
+card.addEventListener(
+  "wheel",
+  (e) => {
+    if (!weatherData) return;
 
-  if (e.deltaY < 0 && currentOffset > -1) {
-    currentOffset--;
-    updateCard(currentOffset, -1);
-  } else if (e.deltaY > 0 && currentOffset < 1) {
-    currentOffset++;
-    updateCard(currentOffset, 1);
-  }
-});
+    e.preventDefault();
+    e.stopPropagation();
 
-/* 🔍 SEARCH LOGIC */
+    if (e.deltaY < 0 && currentOffset > -1) {
+      currentOffset--;
+      updateCard(currentOffset, -1);
+    } else if (e.deltaY > 0 && currentOffset < 1) {
+      currentOffset++;
+      updateCard(currentOffset, 1);
+    }
+  },
+  { passive: false }
+);
 
-/* stop clicks in search UI from hitting the map */
+/* 💡 Global wheel lock:
+   if user scrolls anywhere on this page, block it.
+   (Globe is full-screen, so no page scroll needed.) */
+window.addEventListener(
+  "wheel",
+  (e) => {
+    e.preventDefault();
+  },
+  { passive: false }
+);
+
+/* 🔍 SEARCH */
+
+/* stop search clicks bubbling into map */
 searchContainer.addEventListener("mousedown", (e) => e.stopPropagation());
 searchContainer.addEventListener("click", (e) => e.stopPropagation());
 
@@ -403,10 +443,10 @@ async function performSearch(query) {
     }
 
     searchResults.innerHTML = features
-      .map(
-        (f, idx) =>
-          `<div class="search-item" data-idx="${idx}">${f.place_name}</div>`
-      )
+      .map((f, i) => {
+        const label = formatFeatureName(f);
+        return `<div class="search-item" data-idx="${i}">${label}</div>`;
+      })
       .join("");
     searchResults.classList.add("visible");
   } catch (err) {
@@ -424,7 +464,7 @@ searchInput.addEventListener("input", () => {
   searchTimeout = setTimeout(() => performSearch(q), 300);
 });
 
-/* click on a suggestion */
+/* click suggestion */
 searchResults.addEventListener("click", (e) => {
   const item = e.target.closest(".search-item");
   if (!item || item.classList.contains("empty")) return;
@@ -434,43 +474,31 @@ searchResults.addEventListener("click", (e) => {
   if (!feature) return;
 
   const [lng, lat] = feature.center;
-  const name = feature.place_name;
+  const name = formatFeatureName(feature);
 
   clearSearchResults();
   searchInput.blur();
 
-  map.flyTo({
-    center: [lng, lat],
-    zoom: 5,
-    essential: true,
-  });
-
+  map.flyTo({ center: [lng, lat], zoom: 5, essential: true });
   showWeatherFor(lat, lng, name);
 });
 
-/* Enter key: choose first result if available */
+/* Enter => first result */
 searchInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    if (currentSearchFeatures.length > 0) {
-      const feature = currentSearchFeatures[0];
-      const [lng, lat] = feature.center;
-      const name = feature.place_name;
-      clearSearchResults();
-      searchInput.blur();
-      map.flyTo({
-        center: [lng, lat],
-        zoom: 5,
-        essential: true,
-      });
-      showWeatherFor(lat, lng, name);
-    }
-  }
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  if (!currentSearchFeatures.length) return;
+  const feature = currentSearchFeatures[0];
+  const [lng, lat] = feature.center;
+  const name = formatFeatureName(feature);
+
+  clearSearchResults();
+  searchInput.blur();
+  map.flyTo({ center: [lng, lat], zoom: 5, essential: true });
+  showWeatherFor(lat, lng, name);
 });
 
-/* click anywhere else closes dropdown */
+/* click outside search -> close dropdown */
 document.addEventListener("click", (e) => {
-  if (!searchContainer.contains(e.target)) {
-    clearSearchResults();
-  }
+  if (!searchContainer.contains(e.target)) clearSearchResults();
 });
